@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-import os
+import random
 from .utils import (
     get_all_subjects,
     add_new_subject,
@@ -10,7 +10,12 @@ from .utils import (
     ensure_data_files_exist,
     get_subjects_with_flashcard_counts,
     save_document_file,
-    DOCUMENTS_FOLDER
+    get_all_documents,
+    delete_document,
+    mark_document_as_processed,
+    load_data,
+    DOCUMENTS_FOLDER,
+    DOCUMENT_INDEX_FILE
 )
 
 app = Flask(__name__)
@@ -18,8 +23,8 @@ CORS(app) # Enable CORS for all routes
 
 # Set maximum file size to 16 MB
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-# Define allowed file extensions
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx'}
+# Define allowed file extensions - only markdown is allowed
+ALLOWED_EXTENSIONS = {'md', 'markdown'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -109,10 +114,74 @@ def api_download_document(document_id):
 def api_get_flashcards(subject_id):
     """API endpoint to get flashcards for a specific subject."""
     subjects = get_all_subjects()
+
     if not any(s['id'] == str(subject_id) for s in subjects):
         return jsonify({'error': 'Subject not found'}), 404
+    flashcards = get_flashcards_for_subject(subject_id)
+
+    # shuffle the flashcards
+    random.shuffle(flashcards)
+
+    return jsonify(flashcards)
+
+@app.route('/api/documents', methods=['GET'])
+def api_get_documents():
+    """API endpoint to get all documents."""
+    return jsonify(get_all_documents())
+
+@app.route('/api/documents/<string:document_id>', methods=['DELETE'])
+def api_delete_document(document_id):
+    """API endpoint to delete a document."""
+    success, message = delete_document(document_id)
+    
+    if success:
+        return jsonify({'message': message}), 200
+    else:
+        return jsonify({'error': message}), 404
+
+@app.route('/api/documents/<string:document_id>/process', methods=['POST'])
+def api_process_document(document_id):
+    """API endpoint to process a document and generate flashcards."""
+    from .markdown_flashcard_generator import generate_flashcards_from_markdown
+    import os
+    import traceback
+    
+    # Get the document details
+    document_index = load_data(DOCUMENT_INDEX_FILE)
+    document = next((doc for doc in document_index if doc['id'] == document_id), None)
+    
+    if not document:
+        return jsonify({'error': 'Document not found'}), 404
+    
+    try:
+        # Build the full path to the document
+        document_path = os.path.join(DOCUMENTS_FOLDER, document['stored_filename'])
         
-    return jsonify(get_flashcards_for_subject(subject_id))
+        # Generate flashcards from the markdown document
+        flashcards = generate_flashcards_from_markdown(document_path)
+        
+        # Save the flashcards directly to the subject
+        count = 0
+        for flashcard in flashcards:
+            add_flashcard_to_subject(document['subject_id'], {
+                'question': flashcard['question'],
+                'answer': flashcard['answer']
+            })
+            count += 1
+        
+        # Mark the document as processed
+        success, _ = mark_document_as_processed(document_id)
+        if not success:
+            return jsonify({'error': 'Failed to update document status'}), 500
+        
+        return jsonify({
+            'message': f'Document processed successfully. Generated {count} flashcards.',
+            'flashcardCount': count
+        }), 200
+    except Exception as e:
+        error_traceback = traceback.format_exc()
+        print(f"Error processing document: {str(e)}\n{error_traceback}")
+        return jsonify({'error': f'Error processing document: {str(e)}'}), 500
 
 def create_app():
     """Application factory function."""

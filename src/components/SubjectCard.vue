@@ -30,23 +30,22 @@ const navigateToPractice = () => {
 </script>
 
 <template>
-  <div class="subject-card" @click="navigateToPractice">
+  <div class="subject-card card" @click="navigateToPractice">
     <h2 class="title">{{ title }}</h2>
     <p class="description">{{ description }}</p>
-    <div class="card-count">
-      <span>{{ cardCount }} flashcards</span>
+    <div class="card-footer">
+      <div class="card-count">
+        <span class="card-badge">{{ cardCount }} flashcards</span>
+      </div>
+      <div class="card-action">
+        <span class="study-btn">Study Now →</span>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .subject-card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;

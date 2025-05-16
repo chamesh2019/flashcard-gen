@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "./pages/Home.vue";
 import AddSubject from "./pages/AddSubject.vue";
 import UploadDocument from "./pages/UploadDocument.vue";
-import FlashcardPractice from "./pages/FlashcardPractice.vue"; // Import the new page
+import FlashcardPractice from "./pages/FlashcardPractice.vue";
+import DocumentInfo from "./pages/DocumentInfo.vue";
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: "/upload-document",
     name: "UploadDocument",
     component: UploadDocument,
+  },
+  {
+    path: "/document-info",
+    name: "DocumentInfo",
+    component: DocumentInfo,
   },
   {
     path: "/flashcards/:subjectId", // Route parameter for subject ID

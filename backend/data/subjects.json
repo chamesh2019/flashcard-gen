@@ -1,22 +1,7 @@
 [
   {
     "id": "1",
-    "name": "Mathematics",
-    "description": "Study of numbers, quantity, space, structure, and change."
-  },
-  {
-    "id": "2",
-    "name": "History",
-    "description": "Study of past events, particularly in human affairs."
-  },
-  {
-    "id": "3",
-    "name": "Science",
-    "description": "The intellectual and practical activity encompassing the systematic study of the structure and behaviour of the physical and natural world through observation and experiment."
-  },
-  {
-    "id": "4",
-    "name": "Test",
-    "description": "adsadaa\n"
+    "name": "Computer Architecture & Design",
+    "description": "This course provides a foundational understanding of computer architecture and operation, equipping students with the knowledge and skills to comprehend how computers function at a fundamental level. Through a combination of theoretical concepts and practical exercises, students will explore the basic architecture of a computer, learn how a computer executes instructions, and gain hands-on experience by implementing simple assembly programs."
   }
 ]

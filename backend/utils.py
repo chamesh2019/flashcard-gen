@@ -114,6 +114,47 @@ def add_flashcard_to_subject(subject_id, flashcard_data):
     save_data(FLASHCARDS_FILE, all_flashcards)
     return new_flashcard
 
+def get_all_documents():
+    """Retrieves all documents from the document index JSON file."""
+    return load_data(DOCUMENT_INDEX_FILE)
+
+def delete_document(document_id):
+    """Deletes a document from the document index and file system."""
+    document_index = load_data(DOCUMENT_INDEX_FILE)
+    
+    # Find the document with the matching ID
+    document = next((doc for doc in document_index if doc['id'] == document_id), None)
+    if not document:
+        return False, "Document not found"
+    
+    # Remove the file from the file system
+    file_path = os.path.join(DOCUMENTS_FOLDER, document['stored_filename'])
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    except Exception as e:
+        return False, f"Error deleting file: {str(e)}"
+    
+    # Remove the document from the index
+    document_index = [doc for doc in document_index if doc['id'] != document_id]
+    save_data(DOCUMENT_INDEX_FILE, document_index)
+    
+    return True, "Document deleted successfully"
+
+def mark_document_as_processed(document_id):
+    """Marks a document as processed in the document index."""
+    document_index = load_data(DOCUMENT_INDEX_FILE)
+    
+    # Find the document with the matching ID and update its processed status
+    for doc in document_index:
+        if doc['id'] == document_id:
+            doc['processed'] = True
+            doc['processed_at'] = datetime.now().isoformat()
+            save_data(DOCUMENT_INDEX_FILE, document_index)
+            return True, "Document marked as processed"
+    
+    return False, "Document not found"
+
 def save_document_file(uploaded_file, filename, subject_id):
     """Saves an uploaded document file to the documents folder."""
     # Generate a unique filename to avoid collisions

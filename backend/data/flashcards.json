@@ -1,11 +1,464 @@
 {
   "1": [
-    {"id": "101", "question": "What is 2 + 2?", "answer": "4"},
-    {"id": "102", "question": "What is the Pythagorean theorem?", "answer": "a^2 + b^2 = c^2"}
-  ],
-  "2": [
-    {"id": "201", "question": "When did World War II end?", "answer": "1945"},
-    {"id": "202", "question": "Who was the first President of the United States?", "answer": "George Washington"}
-  ],
-  "3": []
+    {
+      "id": "101",
+      "question": "What is the purpose of the Little Man Computer (LMC)?",
+      "answer": "To provide a simple, understandable model for learning computer basics and programming."
+    },
+    {
+      "id": "102",
+      "question": "What architecture is the LMC based on?",
+      "answer": "The Von Neumann architecture, where data and instructions reside together in the same memory space."
+    },
+    {
+      "id": "103",
+      "question": "Name three key parts of the LMC.",
+      "answer": "Accumulator, Program Counter (PC), Memory"
+    },
+    {
+      "id": "104",
+      "question": "What is the Accumulator used for in the LMC?",
+      "answer": "Holds data being processed."
+    },
+    {
+      "id": "105",
+      "question": "What does the Program Counter (PC) track in the LMC?",
+      "answer": "The address of the next instruction to be executed."
+    },
+    {
+      "id": "106",
+      "question": "What does the memory store in the LMC, and what is its typical size?",
+      "answer": "Stores instructions (represented as binary/machine code) and data (decimal values), limited to 100 locations."
+    },
+    {
+      "id": "107",
+      "question": "What are the three stages of the Instruction Cycle?",
+      "answer": "Fetch, Decode, Execute"
+    },
+    {
+      "id": "108",
+      "question": "What does the Fetch stage of the Instruction Cycle do?",
+      "answer": "The CPU retrieves the instruction from memory at the address indicated by the Program Counter and loads it into the instruction register."
+    },
+    {
+      "id": "109",
+      "question": "What does the Decode stage of the Instruction Cycle do?",
+      "answer": "The CPU interprets the fetched instruction to determine the operation to be performed and identify the operands (data or memory addresses) involved."
+    },
+    {
+      "id": "110",
+      "question": "What does the Execute stage of the Instruction Cycle do?",
+      "answer": "The CPU performs the specified operation using the Arithmetic Logic Unit (ALU) and other components to process data, store results, or change the program flow."
+    },
+    {
+      "id": "111",
+      "question": "Give an example of a Mnemonic Code and what it represents.",
+      "answer": "`ADD` represents the addition operation, `LDA` represents the load operation."
+    },
+    {
+      "id": "112",
+      "question": "What is Machine Code?",
+      "answer": "The numerical code understood and executed by the computer. In LMC, each instruction corresponds to a specific 3-digit machine code."
+    },
+    {
+      "id": "113",
+      "question": "What are Registers?",
+      "answer": "Registers are small, high-speed storage locations within the CPU used to temporarily hold data and control information during processing. The two main registers in the LMC are the Accumulator and the Program Counter."
+    },
+    {
+      "id": "114",
+      "question": "What are some of the limitations of the LMC?",
+      "answer": "Limited Instruction Set, Small Memory Size"
+    },
+    {
+      "id": "115",
+      "question": "How can you overcome the limitations of the LMC?",
+      "answer": "Using Subroutines, Using Labels & Branching, Using Assembly Language"
+    },
+    {
+      "id": "116",
+      "question": "What does computer architecture refer to?",
+      "answer": "The design and organization of computer systems, including the structure of components and their interactions."
+    },
+    {
+      "id": "117",
+      "question": "What factors does computer architecture influence?",
+      "answer": "Performance, efficiency, capabilities, power consumption, cost, and scalability."
+    },
+    {
+      "id": "118",
+      "question": "What was the Analytical Engine designed for?",
+      "answer": "A versatile, general-purpose machine to improve upon Babbage's Difference Engine."
+    },
+    {
+      "id": "119",
+      "question": "What is the significance of the Analytical Engine?",
+      "answer": "It introduced the concept of a stored program and sequential control, laying the foundation for modern computer architecture."
+    },
+    {
+      "id": "120",
+      "question": "What were Ada Lovelace's key contributions?",
+      "answer": "She published extensive notes on the Analytical Engine, included the first computer program, and highlighted programmability."
+    },
+    {
+      "id": "121",
+      "question": "Why is Ada Lovelace considered the first computer programmer?",
+      "answer": "Due to her groundbreaking work on the Analytical Engine, including the first algorithm intended for a machine."
+    },
+    {
+      "id": "122",
+      "question": "What is the significance of the Turing Machine?",
+      "answer": "It provided a mathematical model for simulating any computer algorithm and laid the foundation for modern computer science."
+    },
+    {
+      "id": "123",
+      "question": "What key concepts did the Turing Machine introduce?",
+      "answer": "Universal computing machine, algorithmic processing, and a tape-based model."
+    },
+    {
+      "id": "124",
+      "question": "What is the key feature of the von Neumann architecture?",
+      "answer": "The stored-program concept, where both instructions and data are stored in the same memory system."
+    },
+    {
+      "id": "125",
+      "question": "What are the key components of the von Neumann architecture?",
+      "answer": "CPU, Memory, Input/Output Devices, and Control Unit."
+    },
+    {
+      "id": "126",
+      "question": "What is the most significant aspect of the von Neumann architecture?",
+      "answer": "The stored-program concept, which revolutionized computing by allowing instructions and data to be stored in the same memory system."
+    },
+    {
+      "id": "127",
+      "question": "How did the von Neumann architecture transform computer design and programming?",
+      "answer": "It enabled flexible and efficient programming by treating instructions as data."
+    },
+    {
+      "id": "128",
+      "question": "What is Instruction Set Architecture (ISA)?",
+      "answer": "Defines the instructions and operations a computer can execute, along with the programming model provided to software."
+    },
+    {
+      "id": "129",
+      "question": "What are the key components of ISA?",
+      "answer": "Instruction Set, Instruction Formats, Addressing Modes, and Hardware Interface."
+    },
+    {
+      "id": "130",
+      "question": "What is microarchitecture?",
+      "answer": "The internal design of a processor, including its data path, control unit, and memory hierarchy."
+    },
+    {
+      "id": "131",
+      "question": "What are the key components of microarchitecture?",
+      "answer": "Data Path, Control Unit, and Memory Hierarchy."
+    },
+    {
+      "id": "132",
+      "question": "What is system architecture?",
+      "answer": "The overall structure and interconnections of a computer system's components."
+    },
+    {
+      "id": "133",
+      "question": "What are the key components of system architecture?",
+      "answer": "Memory Subsystems, Input/Output Devices, and Buses and Communication."
+    },
+    {
+      "id": "134",
+      "question": "What is the importance of architectural classification?",
+      "answer": "It helps in understanding and analyzing different aspects of computer systems, enabling informed decisions and optimization."
+    },
+    {
+      "id": "135",
+      "question": "What is Flynn's Taxonomy?",
+      "answer": "A classification of computer architectures based on concurrent instruction streams (I) and data streams (D)."
+    },
+    {
+      "id": "136",
+      "question": "What are the four categories in Flynn's Taxonomy?",
+      "answer": "SISD, SIMD, MISD, and MIMD."
+    },
+    {
+      "id": "137",
+      "question": "What is SISD?",
+      "answer": "Single Instruction, Single Data: One instruction stream and one data stream (e.g., traditional single-core processors)."
+    },
+    {
+      "id": "138",
+      "question": "What are the advantages of SISD?",
+      "answer": "Simplicity, low cost, predictable performance, ease of programming, and reliability."
+    },
+    {
+      "id": "139",
+      "question": "What are the disadvantages of SISD?",
+      "answer": "Limited performance, scalability issues, inefficient for modern workloads, resource underutilization, and outdated for high-performance computing."
+    },
+    {
+      "id": "140",
+      "question": "What is SIMD?",
+      "answer": "Single Instruction, Multiple Data: One instruction stream and multiple data streams (e.g., GPUs, vector processors)."
+    },
+    {
+      "id": "141",
+      "question": "What are the applications of SIMD?",
+      "answer": "Modern GPUs, Vector Processors, Array Processors."
+    },
+    {
+      "id": "142",
+      "question": "What are the advantages of SIMD?",
+      "answer": "High Performance, Efficiency, Scalability, Energy Efficiency, Wide Applications."
+    },
+    {
+      "id": "143",
+      "question": "What are the disadvantages of SIMD?",
+      "answer": "Limited Flexibility, Complex Programming, Hardware Dependency, Data Alignment Issues, Underutilization for Non-Parallel Tasks."
+    },
+    {
+      "id": "144",
+      "question": "What is MISD?",
+      "answer": "Multiple Instruction, Single Data: Multiple instruction streams and one data stream (rarely used in practice)."
+    },
+    {
+      "id": "145",
+      "question": "What are the use cases of MISD?",
+      "answer": "Fault-Tolerant Systems, Encryption and Decryption, Image Processing."
+    },
+    {
+      "id": "146",
+      "question": "What are the advantages of MISD?",
+      "answer": "Theoretical Interest, Specialized Use Cases, Conceptual Framework."
+    },
+    {
+      "id": "147",
+      "question": "What are the disadvantages of MISD?",
+      "answer": "No Practical Implementations, Limited Applicability, Complexity, Resource Underutilization, Lack of Scalability."
+    },
+    {
+      "id": "148",
+      "question": "What is MIMD?",
+      "answer": "Multiple Instruction, Multiple Data: Multiple instruction streams and multiple data streams (e.g., multi-core processors, distributed systems)."
+    },
+    {
+      "id": "149",
+      "question": "What are the key features of MIMD?",
+      "answer": "Independent Processors, Concurrent Execution"
+    },
+    {
+      "id": "150",
+      "question": "What are the use cases of MIMD?",
+      "answer": "High-Performance Computing (HPC), Distributed Systems, Multicore Processors"
+    },
+    {
+      "id": "151",
+      "question": "What are the advantages of MIMD?",
+      "answer": "High Performance, Flexibility, Scalability, Efficient Resource Utilization, Distributed Memory Architecture, Fault Tolerance."
+    },
+    {
+      "id": "152",
+      "question": "What are the disadvantages of MIMD?",
+      "answer": "Complexity, Communication Overhead, Cost, Programming Challenges, Load Balancing, Memory Management."
+    },
+    {
+      "id": "153",
+      "question": "What is Processor Organization?",
+      "answer": "Refers to the structure and design of the Central Processing Unit (CPU), which is the core component of a computer system. Determines how efficiently and effectively a computer can execute instructions and process data."
+    },
+    {
+      "id": "154",
+      "question": "Why is Processor Organization important?",
+      "answer": "Directly influences the speed and accuracy of instruction execution. Optimizes the design and coordination of CPU components. Determines how the CPU accesses and utilizes different types of memory. Addresses the growing demand for energy-efficient computing."
+    },
+    {
+      "id": "155",
+      "question": "Name the components of a Processor.",
+      "answer": "Control Unit (CU), Arithmetic Logic Unit (ALU), Registers, Main Memory"
+    },
+    {
+      "id": "156",
+      "question": "What is the role of the Program Counter (PC)?",
+      "answer": "Special-purpose register holding the memory address of the next instruction to be fetched. Ensures the CPU knows where to fetch the next instruction."
+    },
+    {
+      "id": "157",
+      "question": "What is the role of the Memory Data Register (MDR)?",
+      "answer": "Special-purpose register temporarily holding data or instructions being transferred to or from memory. Acts as a buffer between CPU and memory for smooth transfer."
+    },
+    {
+      "id": "158",
+      "question": "What is the role of the Memory Address Register (MAR)?",
+      "answer": "Special-purpose register holding the memory address of data or instruction being accessed or stored. Ensures accurate access during memory operations."
+    },
+    {
+      "id": "159",
+      "question": "What is the role of the Current Instruction Register (CIR)?",
+      "answer": "Special-purpose register holding the instruction currently being executed. Ensures the CPU knows which instruction to execute at any given time."
+    },
+    {
+      "id": "160",
+      "question": "What is the role of the Control Unit (CU)?",
+      "answer": "Coordinates and controls CPU operations. Fetches instructions from memory, decodes them, and generates control signals. Acts as the 'brain', ensuring components work together efficiently."
+    },
+    {
+      "id": "161",
+      "question": "What is the role of the Accumulator (ACC)?",
+      "answer": "Register storing intermediate results during arithmetic and logical operations. Essential for efficient arithmetic and logical operations."
+    },
+    {
+      "id": "162",
+      "question": "What is the role of the Arithmetic Logic Unit (ALU)?",
+      "answer": "Performs arithmetic and logical operations. Acts as the computational core, performing essential calculations and logical evaluations. Works closely with the Accumulator (ACC)."
+    },
+    {
+      "id": "163",
+      "question": "What is the role of Main Memory?",
+      "answer": "Directly accessible storage holding program instructions and data during execution. Provides the CPU with quick access to instructions and data, enabling program execution."
+    },
+    {
+      "id": "164",
+      "question": "What are the key features of the Arithmetic Logic Unit (ALU)?",
+      "answer": "Responsible for performing arithmetic and logical operations within the CPU. Handles calculations, comparisons, and logical evaluations required for executing instructions."
+    },
+    {
+      "id": "165",
+      "question": "Describe Arithmetic Operations performed by the ALU.",
+      "answer": "Performs basic mathematical calculations, including Addition, Subtraction, Multiplication, Division. Essential for processing numerical data and performing computations."
+    },
+    {
+      "id": "166",
+      "question": "Describe Logical Operations performed by the ALU.",
+      "answer": "Executes logical operations to evaluate conditions and make decisions, such as AND, OR, NOT, XOR. Used in decision-making and control flow within programs."
+    },
+    {
+      "id": "167",
+      "question": "Describe Comparison Operations performed by the ALU.",
+      "answer": "Compares data values to determine relationships, such as Equality, Inequality, & Relative ordering. Enables conditional branching and decision-making in programs."
+    },
+    {
+      "id": "168",
+      "question": "What are Registers?",
+      "answer": "High-speed storage units located within the CPU. Provide fast access to data and instructions needed during processor operations."
+    },
+    {
+      "id": "169",
+      "question": "What are the key aspects of Registers?",
+      "answer": "Temporary Storage: Hold data temporarily while it is being processed. Instruction Pointer (Program Counter - PC): Stores the memory address of the next instruction. Data Manipulation: Used for intermediate calculations."
+    },
+    {
+      "id": "170",
+      "question": "Name the Types of Registers.",
+      "answer": "General-Purpose Registers, Special-Purpose Registers, Control Registers"
+    },
+    {
+      "id": "171",
+      "question": "What is the Von Neumann Architecture?",
+      "answer": "Revolutionized computer design by introducing the stored-program computer concept. Forms the basis of most modern computers and remains the standard model for computer design today. Based on the principle of storing program instructions and data in the same memory space."
+    },
+    {
+      "id": "172",
+      "question": "What are the Advantages of the Von Neumann Architecture?",
+      "answer": "Simplicity: Relatively simple to understand and implement. Flexibility: The ability to store instructions in memory allows for the execution of different programs without changing the hardware. Efficiency: The sequential nature of processing instructions maximizes the utilization of the CPU."
+    },
+    {
+      "id": "173",
+      "question": "What are the Limitations of the Von Neumann Architecture?",
+      "answer": "Von Neumann Bottleneck: The sequential processing model can limit the overall performance of the system. Memory Bottleneck: The CPU and memory access share the same bus, leading to potential performance limitations. Lack of Parallelism: Does not inherently support parallel processing."
+    },
+    {
+      "id": "174",
+      "question": "Describe the Fetch stage of the Instruction Cycle.",
+      "answer": "The processor retrieves the next instruction from the memory. The address of the instruction to be fetched is typically stored in a special register called the instruction pointer or program counter. The control unit sends a memory request using this address, and the instruction is loaded into the processor's instruction register."
+    },
+    {
+      "id": "175",
+      "question": "Describe the Decode stage of the Instruction Cycle.",
+      "answer": "The fetched instruction is interpreted by the control unit. The control unit determines the operation to be performed based on the instruction's opcode (operation code) and identifies the operands involved. It decodes the instruction to understand the required operations and any necessary data manipulation."
+    },
+    {
+      "id": "176",
+      "question": "Describe the Execute stage of the Instruction Cycle.",
+      "answer": "The necessary operations are performed on the data based on the decoded instruction. This stage often involves utilizing the Arithmetic Logic Unit (ALU) for arithmetic calculations, logical evaluations, or other specified operations. The ALU performs the required calculations or manipulations on the operands."
+    },
+    {
+      "id": "177",
+      "question": "Describe the Store stage of the Instruction Cycle.",
+      "answer": "The result of the operation is typically stored back into memory or a register. The result may be written to a specific memory location or stored in a designated register for future use. Storing the result allows subsequent instructions to access or utilize the updated data as needed."
+    },
+    {
+      "id": "178",
+      "question": "What is Register Organization?",
+      "answer": "A fundamental concept in computer systems that plays a critical role in performance and functionality. Focuses on the use of registers as high-speed storage units within the CPU."
+    },
+    {
+      "id": "179",
+      "question": "What is the Purpose of Registers?",
+      "answer": "High-Speed Storage: Registers are small, fast-access memory units located within the CPU. Designed to store and hold data temporarily during the execution of instructions. Role in CPU Operations: Hold data, instructions, or addresses temporarily while they are being processed."
+    },
+    {
+      "id": "180",
+      "question": "What is the Importance of Register Organization?",
+      "answer": "Speed and Efficiency: Provides the fastest form of data storage, enables swift data access and manipulation. Data and Instruction Processing: Registers hold critical information during program execution, ensures smooth and efficient data flow. Operand Storage and Access: Allows for optimal allocation and management of operands. Control Flow and Program Execution: Registers are essential for control flow, ensures instructions are executed in the correct order."
+    },
+    {
+      "id": "181",
+      "question": "What are General-Purpose Registers?",
+      "answer": "Essential components of register organization in a processor. Provide temporary storage for data, operands, intermediate results, and memory addresses during instruction execution. Examples: AX, BX, CX, DX in x86 architecture."
+    },
+    {
+      "id": "182",
+      "question": "What are the Roles of General-Purpose Registers?",
+      "answer": "Operand Storage: Hold operands required for operations. Intermediate Result Storage: Store results obtained during instruction execution. Address Storage: Hold memory addresses for efficient memory access and manipulation."
+    },
+    {
+      "id": "183",
+      "question": "What are Special-Purpose Registers?",
+      "answer": "Registers with specific roles and functions within a processor. Designed to support critical operations like instruction execution, memory access, and control flow. Examples: Program Counter (PC), Instruction Register (IR)."
+    },
+    {
+      "id": "184",
+      "question": "What is the Stack Pointer (SP)?",
+      "answer": "Keeps track of the top of the stack. Enables efficient stack-based operations, such as function calls and returns. Automatically adjusted when data is pushed or popped from the stack."
+    },
+    {
+      "id": "185",
+      "question": "What is the Status Register/Flags Register?",
+      "answer": "Stores the condition or status of the processor. Contains individual flag bits indicating various conditions, such as Carry Flag (CF), Zero Flag (ZF), Overflow Flag (OF), Sign Flag (SF), Parity Flag (PF). Used in conditional branching and decision-making."
+    },
+    {
+      "id": "186",
+      "question": "What is the Memory Address Register (MAR)?",
+      "answer": "Holds the memory address being accessed. Specifies the location in memory from which data is to be read or written. Acts as an interface between the CPU and memory."
+    },
+    {
+      "id": "187",
+      "question": "What are Register Organization Techniques?",
+      "answer": "Aim to improve performance and efficiency by optimizing the usage of registers within a processor. Focus on reducing data dependencies, minimizing memory access, and enhancing instruction-level parallelism."
+    },
+    {
+      "id": "188",
+      "question": "What is Register Renaming?",
+      "answer": "Reduce data dependencies and improve instruction-level parallelism. Assigns temporary or virtual registers to hold intermediate values during program execution. Dynamically maps original registers to temporary registers to resolve dependencies."
+    },
+    {
+      "id": "189",
+      "question": "What is Register Allocation?",
+      "answer": "Optimize the assignment of registers to variables within a program. Compiler algorithms analyze the program's variable usage patterns. Assign registers to frequently accessed variables to minimize memory accesses."
+    },
+    {
+      "id": "190",
+      "question": "What is Register Windowing?",
+      "answer": "Increase the number of available registers using a sliding window approach. Utilizes a subset of registers (a 'window') that is accessible at a given time. Slides the window to make different sets of registers visible as needed."
+    },
+    {
+      "id": "191",
+      "question": "What is Register Stack?",
+      "answer": "Efficiently manage temporary values and function calls using a stack-based organization. Registers are pushed onto a stack when a function is called and popped when the function returns. Saves and restores registers during context switching."
+    },
+    {
+      "id": "192",
+      "question": "What are the Advantages of Register Organization Techniques?",
+      "answer": "Improved Performance: Reduce dependencies and increase instruction-level parallelism. Reduced Memory Latency: Minimize the need for frequent memory accesses. Efficient Resource Utilization: Optimize the utilization of available registers."
+    }
+  ]
 }

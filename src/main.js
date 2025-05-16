@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import "./style.css";
+import "./assets/components.css"; // Import our new components style sheet
 import App from "./App.vue";
 import router from "./router"; // Import the router
 

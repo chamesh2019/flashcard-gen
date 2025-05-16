@@ -1,51 +1,69 @@
 <template>
-  <div class="upload-document-container">
-    <h2>Upload Document</h2>
-
-    <div v-if="isLoading" class="loading-message">
-      <p>Loading subjects...</p>
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Upload Document</h1>
+      <p class="page-description">Upload a Markdown document to generate flashcards</p>
     </div>
 
-    <div v-else-if="error" class="error-message">
-      <p>{{ error }}</p>
-      <button @click="fetchSubjects">Try Again</button>
-    </div>
-
-    <form v-else @submit.prevent="handleSubmit" class="upload-form">
-      <div class="form-group">
-        <label for="document">Upload Document:</label>
-        <input type="file" id="document" @change="handleFileUpload" accept=".pdf,.doc,.docx,.txt"
-          :disabled="uploading" />
-        <p class="file-info" v-if="selectedFile">
-          Selected: {{ selectedFile.name }} ({{ formatFileSize(selectedFile.size) }})
-        </p>
-      </div>
-
-      <div class="form-group">
-        <label for="subject">Select Subject:</label>
-        <select id="subject" v-model="selectedSubjectId" required :disabled="uploading || subjects.length === 0">
-          <option disabled value="">Please select one</option>
-          <option v-for="subject in subjects" :key="subject.id" :value="subject.id">
-            {{ subject.name }}
-          </option>
-        </select>
-        <div v-if="subjects.length === 0" class="warning-message">
-          No subjects available. Please <router-link to="/add-subject">add a subject</router-link> first.
+    <div class="card form-container">
+      <div v-if="isLoading" class="message-box info-message">
+        <div class="loading-indicator">
+          <span class="loading-spinner"></span>
+          <p>Loading subjects...</p>
         </div>
       </div>
 
-      <button type="submit" :disabled="uploading || !selectedFile || !selectedSubjectId || subjects.length === 0">
-        {{ uploading ? 'Uploading...' : 'Upload' }}
-      </button>
-
-      <div v-if="uploadSuccess" class="success-message">
-        <p>{{ uploadSuccess }}</p>
+      <div v-else-if="error" class="message-box error-message">
+        <p>{{ error }}</p>
+        <button @click="fetchSubjects" class="btn btn-primary">Try Again</button>
       </div>
 
-      <div v-if="uploadError" class="error-message">
-        <p>{{ uploadError }}</p>
-      </div>
-    </form>
+      <form v-else @submit.prevent="handleSubmit" class="upload-form">
+        <div class="form-group">
+          <label for="document">Upload Markdown Document:</label>
+          <div class="file-upload-container">
+            <input type="file" id="document" class="file-input" @change="handleFileUpload" accept=".md,.markdown"
+              :disabled="uploading" />
+            <label for="document" class="file-upload-label">
+              <span class="file-upload-icon">📄</span>
+              <span class="file-upload-text">Choose a file...</span>
+            </label>
+          </div>
+          <div v-if="selectedFile" class="selected-file">
+            <span class="file-icon">📄</span>
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Select Subject:</label>
+          <select id="subject" v-model="selectedSubjectId" required :disabled="uploading || subjects.length === 0">
+            <option disabled value="">Please select one</option>
+            <option v-for="subject in subjects" :key="subject.id" :value="subject.id">
+              {{ subject.name }}
+            </option>
+          </select>
+          <div v-if="subjects.length === 0" class="message-box warning-message">
+            No subjects available. Please <router-link to="/add-subject">add a subject</router-link> first.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary submit-button"
+          :disabled="uploading || !selectedFile || !selectedSubjectId || subjects.length === 0">
+          <span class="icon">{{ uploading ? '⏳' : '📤' }}</span>
+          {{ uploading ? 'Uploading...' : 'Upload Document' }}
+        </button>
+
+        <div v-if="uploadSuccess" class="message-box success-message">
+          <p>{{ uploadSuccess }}</p>
+        </div>
+
+        <div v-if="uploadError" class="message-box error-message">
+          <p>{{ uploadError }}</p>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -144,62 +162,102 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.upload-document-container {
+.form-container {
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #333;
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
+.loading-spinner {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 0.75rem;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #555;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.form-group input[type="file"],
-.form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  box-sizing: border-box;
+/* Custom file upload styling */
+.file-upload-container {
+  position: relative;
+  margin-bottom: 1rem;
 }
 
-.form-group select {
-  height: 2.5rem;
+.file-input {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
 }
 
-.form-group input[type="file"]:disabled,
-.form-group select:disabled {
-  background-color: #f0f0f0;
-  cursor: not-allowed;
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.file-info {
+.file-upload-label:hover {
+  background-color: #f1f5f9;
+  border-color: var(--primary-color);
+}
+
+.file-upload-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.selected-file {
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
   margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #666;
 }
 
-button {
+.file-icon {
+  margin-right: 0.5rem;
+}
+
+.file-name {
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.file-size {
+  color: var(--text-light);
+  font-size: 0.875rem;
+}
+
+.submit-button {
   width: 100%;
-  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button {
   background-color: #4CAF50;
   color: white;
   border: none;

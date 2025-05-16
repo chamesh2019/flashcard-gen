@@ -35,12 +35,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home-container">
-    <div class="header">
-      <h1>Flashcard Generator</h1>
-      <p>Select a subject to view or create flashcards</p>
-      <router-link to="/add-subject">
-        <button class="add-subject-button">Add New Subject</button>
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Flashcard Generator</h1>
+      <p class="page-description">Select a subject to view and practice with your flashcards, or add a new subject to
+        get started.</p>
+      <router-link to="/add-subject" class="btn btn-primary">
+        <span class="icon">✚</span> Add New Subject
       </router-link>
     </div>
 
