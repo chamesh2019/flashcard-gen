@@ -1,46 +1,37 @@
 <script setup>
 import SubjectCard from '../components/SubjectCard.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
-// Hardcoded subjects data
-const subjects = ref([
-  {
-    id: 1,
-    title: 'Mathematics',
-    description: 'Algebra, calculus, geometry, and other mathematical concepts for students of all levels.',
-    cardCount: 45
-  },
-  {
-    id: 2,
-    title: 'Computer Science',
-    description: 'Programming concepts, algorithms, data structures, and computer architecture.',
-    cardCount: 32
-  },
-  {
-    id: 3,
-    title: 'Biology',
-    description: 'Cell biology, genetics, ecology, and human anatomy for biology students.',
-    cardCount: 28
-  },
-  {
-    id: 4,
-    title: 'History',
-    description: 'World history, important events, historical figures and civilizations.',
-    cardCount: 37
-  },
-  {
-    id: 5,
-    title: 'Chemistry',
-    description: 'Organic chemistry, periodic table, chemical reactions and laboratory techniques.',
-    cardCount: 24
-  },
-  {
-    id: 6,
-    title: 'Languages',
-    description: 'Vocabulary, grammar, and common phrases for various languages.',
-    cardCount: 56
+const subjectsWithFlashcards = ref([]);
+const isLoading = ref(true);
+const errorMessage = ref('');
+
+const fetchSubjectsSummary = async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/subjects-summary');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch subjects summary: ${response.statusText} (${response.status})`);
+    }
+    const data = await response.json();
+    // The new endpoint already provides 'cardCount' and subject details including 'name' and 'description'
+    // We just need to ensure the 'title' prop for SubjectCard is mapped if it expects 'title' specifically.
+    subjectsWithFlashcards.value = data.map(subject => ({
+      ...subject,
+      title: subject.name // Assuming SubjectCard expects a 'title' prop
+    }));
+  } catch (error) {
+    console.error('Error fetching subjects summary:', error);
+    errorMessage.value = error.message || 'Could not load subjects. Please try again later.';
   }
-]);
+  isLoading.value = false;
+};
+
+onMounted(() => {
+  fetchSubjectsSummary();
+});
+
 </script>
 
 <template>
@@ -52,14 +43,21 @@ const subjects = ref([
         <button class="add-subject-button">Add New Subject</button>
       </router-link>
     </div>
-    
-    <div class="subjects-grid">
-      <div v-for="subject in subjects" :key="subject.id" class="subject-item">
-        <SubjectCard 
-          :title="subject.title" 
-          :description="subject.description" 
-          :cardCount="subject.cardCount" 
-        />
+
+    <div v-if="isLoading" class="loading-message">
+      <p>Loading subjects...</p>
+    </div>
+    <div v-else-if="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+      <button @click="fetchSubjectsSummary">Try Again</button>
+    </div>
+    <div v-else-if="subjectsWithFlashcards.length === 0" class="no-subjects-message">
+      <p>No subjects found. Why not add one?</p>
+    </div>
+    <div v-else class="subjects-grid">
+      <div v-for="subject in subjectsWithFlashcards" :key="subject.id" class="subject-item">
+        <SubjectCard :id="subject.id" :title="subject.title" :description="subject.description"
+          :cardCount="subject.cardCount" />
       </div>
     </div>
   </div>
@@ -102,22 +100,39 @@ const subjects = ref([
 }
 
 .add-subject-button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
+  /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin-top: 1rem;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
 .add-subject-button:hover {
   background-color: #45a049;
+}
+
+.loading-message,
+.error-message,
+.no-subjects-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error-message button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

@@ -1,6 +1,11 @@
 <script setup>
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
+  id: { // Added id prop
+    type: [String, Number],
+    required: true
+  },
   title: {
     type: String,
     required: true
@@ -14,10 +19,18 @@ const props = defineProps({
     required: true
   }
 });
+
+const router = useRouter();
+
+const navigateToPractice = () => {
+  if (props.id) {
+    router.push(`/flashcards/${props.id}`);
+  }
+};
 </script>
 
 <template>
-  <div class="subject-card">
+  <div class="subject-card" @click="navigateToPractice">
     <h2 class="title">{{ title }}</h2>
     <p class="description">{{ description }}</p>
     <div class="card-count">

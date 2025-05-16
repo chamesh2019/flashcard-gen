@@ -1,0 +1,3 @@
+Flask
+Flask-CORS # For handling Cross-Origin Resource Sharing
+Werkzeug # For secure_filename and other utilities

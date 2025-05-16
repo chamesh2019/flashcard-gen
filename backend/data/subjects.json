@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "name": "Mathematics",
+    "description": "Study of numbers, quantity, space, structure, and change."
+  },
+  {
+    "id": "2",
+    "name": "History",
+    "description": "Study of past events, particularly in human affairs."
+  },
+  {
+    "id": "3",
+    "name": "Science",
+    "description": "The intellectual and practical activity encompassing the systematic study of the structure and behaviour of the physical and natural world through observation and experiment."
+  },
+  {
+    "id": "4",
+    "name": "Test",
+    "description": "adsadaa\n"
+  }
+]
