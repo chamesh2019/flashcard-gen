@@ -9,3 +9,4 @@ This is a Vue.js project built with Vite. When suggesting code, please keep in m
 - Follow Vue's style guide for component organization
 - Prefer using the script setup syntax for components
 - Use Vue's built-in reactivity system (ref, reactive, computed, etc.)
+  w

@@ -48,6 +48,9 @@ const subjects = ref([
     <div class="header">
       <h1>Flashcard Generator</h1>
       <p>Select a subject to view or create flashcards</p>
+      <router-link to="/add-subject">
+        <button class="add-subject-button">Add New Subject</button>
+      </router-link>
     </div>
     
     <div class="subjects-grid">
@@ -96,6 +99,25 @@ const subjects = ref([
 .subject-item {
   min-height: 200px;
   margin-bottom: 1rem;
+}
+
+.add-subject-button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.add-subject-button:hover {
+  background-color: #45a049;
 }
 
 @media (max-width: 768px) {
