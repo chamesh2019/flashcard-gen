@@ -42,11 +42,6 @@ onMounted(() => {
         <p class="page-description">Select a subject to view and practice with your flashcards, or add a new subject to
           get started.</p>
       </div>
-      <div class="header-actions">
-        <router-link to="/add-subject" class="btn btn-primary">
-          <span class="icon">✚</span> Add New Subject
-        </router-link>
-      </div>
     </div>
 
     <div v-if="isLoading" class="message-box info-message">

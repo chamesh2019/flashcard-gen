@@ -2,22 +2,22 @@
   <nav class="navbar">
     <div class="container">
       <div class="navbar-brand">
-        <router-link to="/" class="navbar-item brand-text">
+        <router-link :to="{ path: '/', query: route.query }" class="navbar-item brand-text">
           <span class="logo-icon">📚</span>
           FlashcardGen
         </router-link>
       </div>
       <div class="navbar-menu">
-        <router-link to="/" class="navbar-item">
+        <router-link :to="{ path: '/', query: route.query }" class="navbar-item">
           <span class="icon">🏠</span> Home
         </router-link>
-        <router-link to="/add-subject" class="navbar-item">
+        <router-link v-if="isAdmin" :to="{ path: '/add-subject', query: route.query }" class="navbar-item">
           <span class="icon">➕</span> Add Subject
         </router-link>
-        <router-link to="/upload-document" class="navbar-item">
+        <router-link v-if="isAdmin" :to="{ path: '/upload-document', query: route.query }" class="navbar-item">
           <span class="icon">📄</span> Upload Document
         </router-link>
-        <router-link to="/document-info" class="navbar-item">
+        <router-link v-if="isAdmin" :to="{ path: '/document-info', query: route.query }" class="navbar-item">
           <span class="icon">📋</span> Document Info
         </router-link>
         <!-- Add other navigation links here as your app grows -->
@@ -27,6 +27,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const isAdmin = computed(() => route.query.admin !== undefined);
 </script>
 
 <style scoped>

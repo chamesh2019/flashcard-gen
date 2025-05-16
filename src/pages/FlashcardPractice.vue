@@ -304,7 +304,7 @@ watch(() => route.params.subjectId, (newId) => {
 /* Flashcard styling using 3D transforms */
 .flashcard {
     perspective: 1000px;
-    height: 300px;
+    height: 400px;
     cursor: pointer;
 }
 
@@ -345,6 +345,20 @@ watch(() => route.params.subjectId, (newId) => {
     color: white;
     transform: rotateY(180deg);
     padding: 0;
+}
+
+.flashcard-front .card-content p,
+.flashcard-back .card-content p {
+    word-wrap: break-word;
+    /* Older browsers */
+    overflow-wrap: break-word;
+    /* Standard property */
+    white-space: pre-wrap;
+    /* Preserve whitespace and wrap */
+    max-height: 200px;
+    /* Adjust as needed */
+    overflow-y: auto;
+    /* Add scroll for very long content */
 }
 
 .card-content {
@@ -433,11 +447,12 @@ watch(() => route.params.subjectId, (newId) => {
 }
 
 .rating-container {
-    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .rating-prompt {
     font-size: 1rem;
+    margin-top: 0;
     margin-bottom: 1rem;
     color: var(--text-light);
     text-align: center;
@@ -693,3 +708,4 @@ watch(() => route.params.subjectId, (newId) => {
     min-width: 80px;
 }
 </style>
+```
