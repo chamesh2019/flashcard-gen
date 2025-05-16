@@ -54,12 +54,10 @@
                                 <span class="status-dot"></span>
                                 {{ doc.processed ? 'Processed' : 'Pending' }}
                             </span>
-                            <div v-if="doc.processed && subjectFlashcards[doc.subject_id]" class="flashcard-count">
-                                {{ subjectFlashcards[doc.subject_id] }} flashcards
-                            </div>
                         </td>
                         <td class="action-buttons">
-                            <a :href="`http://127.0.0.1:5000/api/documents/${doc.id}/download`" class="btn btn-primary">
+                            <a :href="`https://csmanager2020.pythonanywhere.com/api/documents/${doc.id}/download`"
+                                class="btn btn-primary">
                                 <span class="icon">⬇️</span> Download
                             </a>
                             <button v-if="!doc.processed" @click="processDocument(doc)" class="btn btn-success"
@@ -90,28 +88,6 @@ const error = ref('');
 const processingDocId = ref(null);
 const deletingDocId = ref(null);
 const actionMessage = ref('');
-const subjectFlashcards = ref({});
-
-const fetchFlashcardCounts = async () => {
-    try {
-        // Get subjects with flashcard counts
-        const response = await fetch('http://127.0.0.1:5000/api/subjects-summary');
-        if (!response.ok) {
-            throw new Error(`Failed to fetch flashcard counts: ${response.statusText}`);
-        }
-        const subjectsWithCounts = await response.json();
-
-        // Create a map of subject ID to flashcard count
-        const countMap = {};
-        subjectsWithCounts.forEach(subject => {
-            countMap[subject.id] = subject.cardCount;
-        });
-
-        subjectFlashcards.value = countMap;
-    } catch (err) {
-        console.error('Error fetching flashcard counts:', err);
-    }
-};
 
 const fetchDocuments = async () => {
     isLoading.value = true;
@@ -119,21 +95,16 @@ const fetchDocuments = async () => {
 
     try {
         // Fetch documents
-        const documentsResponse = await fetch('http://127.0.0.1:5000/api/documents');
+        const documentsResponse = await fetch('https://csmanager2020.pythonanywhere.com/api/documents');
         if (!documentsResponse.ok) {
             throw new Error(`Failed to fetch documents: ${documentsResponse.statusText}`);
         }
-        documents.value = await documentsResponse.json();
-
-        // Also fetch subjects to display subject names
-        const subjectsResponse = await fetch('http://127.0.0.1:5000/api/subjects');
+        documents.value = await documentsResponse.json();        // Also fetch subjects to display subject names
+        const subjectsResponse = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects');
         if (!subjectsResponse.ok) {
             throw new Error(`Failed to fetch subjects: ${subjectsResponse.statusText}`);
         }
         subjects.value = await subjectsResponse.json();
-
-        // Fetch flashcard counts for each subject
-        await fetchFlashcardCounts();
     } catch (err) {
         console.error('Error fetching data:', err);
         error.value = err.message || 'Failed to load documents. Please try again.';
@@ -162,7 +133,7 @@ const processDocument = async (doc) => {
     processingDocId.value = doc.id;
 
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/documents/${doc.id}/process`, {
+        const response = await fetch(`https://csmanager2020.pythonanywhere.com/api/documents/${doc.id}/process`, {
             method: 'POST'
         });
 
@@ -171,14 +142,9 @@ const processDocument = async (doc) => {
             throw new Error(errorData.error || 'Failed to process document');
         }
 
-        const responseData = await response.json();
-
-        // On success, update the document in our local state
+        const responseData = await response.json();        // On success, update the document in our local state
         const updatedDoc = { ...doc, processed: true };
         documents.value = documents.value.map(d => d.id === doc.id ? updatedDoc : d);
-
-        // Refresh flashcard counts
-        await fetchFlashcardCounts();
 
         // Show success message with flashcard count
         actionMessage.value = responseData.message || `Document processed successfully! Generated ${responseData.flashcardCount || 0} flashcards.`;
@@ -200,7 +166,7 @@ const deleteDocument = async (doc) => {
     deletingDocId.value = doc.id;
 
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/documents/${doc.id}`, {
+        const response = await fetch(`https://csmanager2020.pythonanywhere.com/api/documents/${doc.id}`, {
             method: 'DELETE'
         });
 
@@ -230,8 +196,25 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* The table styles are now coming from components.css */
+th {
+    background-color: #f8fafc;
+    padding: 1rem;
+}
 
+td {
+    padding: 1rem;
+    vertical-align: top;
+}
+
+tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cell content styling */
 .filename-cell {
     display: flex;
     align-items: center;
@@ -274,20 +257,32 @@ onMounted(() => {
     }
 }
 
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.status-processed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-pending {
+    background-color: var(--warning-color);
+    color: white;
+}
+
 .status-dot {
     display: inline-block;
     width: 8px;
     height: 8px;
     border-radius: 50%;
     margin-right: 6px;
-}
-
-.status-processed .status-dot {
-    background-color: white;
-}
-
-.status-pending .status-dot {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .empty-state {
@@ -299,31 +294,21 @@ onMounted(() => {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    min-width: 240px;
+    /* Ensures consistent width for action column */
 }
 
-/* We're using the .btn classes from components.css */
-.btn {
+/* Button styling for table actions */
+.action-buttons .btn {
     margin-bottom: 0.25rem;
+    white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
 }
 
 button:disabled,
 button[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
-}
-
-.flashcard-count {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    margin-top: 0.25rem;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-}
-
-.flashcard-count::before {
-    content: "🃏";
-    margin-right: 0.25rem;
-    font-style: normal;
 }
 </style>

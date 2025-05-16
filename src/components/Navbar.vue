@@ -36,11 +36,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
   position: sticky;
-  top:
-
-    0;
+  top: 0;
   z-index: 1000;
 }
 
@@ -95,10 +93,12 @@
 
 .navbar-menu .navbar-item:hover {
   color: var(--primary-color);
+  background-color: rgba(59, 130, 246, 0.05);
 }
 
 .navbar-menu .router-link-active {
   color: var(--primary-color);
+  background-color: rgba(59, 130, 246, 0.1);
   font-weight: 500;
 }
 

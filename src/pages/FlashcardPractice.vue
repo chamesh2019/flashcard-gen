@@ -1,45 +1,99 @@
 <template>
-    <div class="flashcard-practice-page">
-        <div v-if="isLoading" class="loading-message">
-            <p>Loading flashcards for {{ subjectName || 'subject' }}...</p>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Flashcard Practice</h1>
+            <p v-if="subjectName" class="page-description">Studying: {{ subjectName }}</p>
         </div>
-        <div v-else-if="errorMessage" class="error-message">
+
+        <div v-if="isLoading" class="message-box info-message">
+            <div class="loading-indicator">
+                <span class="loading-spinner"></span>
+                <p>Loading flashcards for {{ subjectName || 'subject' }}...</p>
+            </div>
+        </div>
+
+        <div v-else-if="errorMessage" class="message-box error-message">
             <p>{{ errorMessage }}</p>
-            <router-link to="/"><button>Back to Home</button></router-link>
+            <router-link to="/" class="btn btn-primary">Back to Home</router-link>
         </div>
-        <div v-else-if="!currentFlashcard && !isPracticeFinished" class="no-flashcards-message">
+
+        <div v-else-if="!currentFlashcard && !isPracticeFinished" class="message-box warning-message">
             <p>No flashcards found for {{ subjectName }}.</p>
-            <router-link to="/"><button>Back to Home</button></router-link>
+            <router-link to="/" class="btn btn-primary">Back to Home</router-link>
         </div>
 
-        <div v-if="currentFlashcard && !isPracticeFinished" class="flashcard-container">
-            <h2>Practicing: {{ subjectName }} ({{ currentIndex + 1 }} / {{ flashcards.length }})</h2>
-            <div class="flashcard">
-                <div class="question">
-                    <p>{{ currentFlashcard.question }}</p>
-                </div>
-                <div v-if="showAnswer" class="answer">
-                    <p>{{ currentFlashcard.answer }}</p>
+        <div v-if="currentFlashcard && !isPracticeFinished" class="flashcard-container card">
+            <!-- Progress bar -->
+            <div class="progress-container">
+                <div class="progress-bar" :style="{ width: `${(currentIndex + 1) / flashcards.length * 100}%` }"></div>
+            </div>
+            <div class="flashcard" :class="{ 'flipped': showAnswer }" @click="!showAnswer && revealAnswer()">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <div class="card-content">
+                            <p>{{ currentFlashcard.question }}</p>
+                            <div v-if="!showAnswer" class="tap-hint">Tap to reveal answer</div>
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="card-content">
+                            <div class="answer-label">ANSWER</div>
+                            <p>{{ currentFlashcard.answer }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="controls">
-                <button v-if="!showAnswer" @click="revealAnswer">Show Answer</button>
-                <div v-if="showAnswer" class="rating-buttons">
-                    <button @click="rateFlashcard('good')">👍 Good</button>
-                    <button @click="rateFlashcard('bad')">👎 Bad</button>
+            <div v-if="showAnswer" class="rating-container">
+                <p class="rating-prompt">How well did you know this?</p>
+                <div class="rating-buttons">
+                    <button @click="rateFlashcard('good')" class="rating-btn got-it-btn">
+                        <span class="thumb-icon">👍</span> Got it
+                    </button>
+                    <button @click="rateFlashcard('bad')" class="rating-btn need-review-btn">
+                        <span class="thumb-icon">👎</span> Need Review
+                    </button>
                 </div>
             </div>
+
+
         </div>
 
-        <div v-if="isPracticeFinished" class="summary-container">
-            <h2>Practice Summary for {{ subjectName }}</h2>
-            <p>You have completed all flashcards for this subject.</p>
-            <p><strong>{{ goodRatings }}</strong> rated 👍 (Good)</p>
-            <p><strong>{{ badRatings }}</strong> rated 👎 (Bad)</p>
-            <p><strong>{{ unratedCount }}</strong> unrated (if any, due to refresh or leaving early)</p>
-            <button @click="restartPractice">Practice Again</button>
-            <router-link to="/"><button>Back to Home</button></router-link>
+        <div v-if="isPracticeFinished" class="card summary-container">
+            <div class="summary-header">
+                <div class="completion-badge">
+                    <div class="completion-icon">✓</div>
+                </div>
+                <h2>Practice Complete!</h2>
+                <p class="completion-text">You've completed all flashcards for <strong>{{ subjectName }}</strong></p>
+            </div>
+
+            <div class="summary-stats">
+                <div class="stat-item good-stats">
+                    <span class="stat-value">{{ goodRatings }}</span>
+                    <span class="stat-label">Got it</span>
+                    <span class="stat-icon">👍</span>
+                </div>
+                <div class="stat-item bad-stats">
+                    <span class="stat-value">{{ badRatings }}</span>
+                    <span class="stat-label">Need Review</span>
+                    <span class="stat-icon">👎</span>
+                </div>
+                <div v-if="unratedCount > 0" class="stat-item unrated-stats">
+                    <span class="stat-value">{{ unratedCount }}</span>
+                    <span class="stat-label">Unrated</span>
+                    <span class="stat-icon">❓</span>
+                </div>
+            </div>
+
+            <div class="summary-actions">
+                <button @click="restartPractice" class="primary-action-btn">
+                    Practice Again
+                </button>
+                <router-link to="/" class="secondary-action-btn">
+                    Back to Home
+                </router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -83,7 +137,7 @@ const saveRatings = () => {
 const fetchSubjectDetails = async () => {
     // Attempt to get subject name from subjects-summary first for efficiency
     try {
-        const summaryResponse = await fetch(`http://127.0.0.1:5000/api/subjects-summary`);
+        const summaryResponse = await fetch(`https://csmanager2020.pythonanywhere.com/api/subjects-summary`);
         if (!summaryResponse.ok) throw new Error('Failed to fetch subjects summary');
         const summaryData = await summaryResponse.json();
         const foundSubject = summaryData.find(s => s.id === subjectId.value);
@@ -117,7 +171,7 @@ const fetchFlashcards = async () => {
     try {
         await fetchSubjectDetails(); // Get subject name
 
-        const response = await fetch(`http://127.0.0.1:5000/api/subjects/${subjectId.value}/flashcards`);
+        const response = await fetch(`https://csmanager2020.pythonanywhere.com/api/subjects/${subjectId.value}/flashcards`);
         if (!response.ok) {
             throw new Error(`Failed to fetch flashcards: ${response.statusText} (${response.status})`);
         }
@@ -202,123 +256,440 @@ watch(() => route.params.subjectId, (newId) => {
 </script>
 
 <style scoped>
-.flashcard-practice-page {
-    max-width: 700px;
-    margin: 2rem auto;
+.container {
+    max-width: 800px;
+    margin: 0 auto;
     padding: 1rem;
-    font-family: sans-serif;
 }
 
-.loading-message,
-.error-message,
-.no-flashcards-message,
-.summary-container {
-    text-align: center;
-    padding: 2rem;
+.flashcard-container {
+    position: relative;
+    padding: 0;
+    padding-top: 6px;
+    overflow: hidden;
 }
 
-.error-message button,
-.no-flashcards-message button,
-.summary-container button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-left: 0.5rem;
-    /* For spacing if multiple buttons */
+/* Progress bar styling */
+.progress-container {
+    height: 6px;
+    width: 100%;
+    background-color: #e2e8f0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    overflow: hidden;
 }
 
-.summary-container button:first-of-type {
-    margin-left: 0;
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
 }
 
-.flashcard-container h2 {
-    text-align: center;
+.flashcard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1.5rem;
-    color: #333;
+    margin-top: 0.5rem;
 }
 
+.card-count {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Flashcard styling using 3D transforms */
 .flashcard {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 2rem;
-    min-height: 200px;
+    perspective: 1000px;
+    height: 300px;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 2em;
+    transition: transform 0.6s;
+}
+
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: calc(100% - 4em);
+    height: calc(100% - 4em);
+    backface-visibility: hidden;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0;
+}
+
+.flashcard-front {
+    background-color: white;
+    color: var(--text-color);
+}
+
+.flashcard-back {
+    background-color: #4285F4;
+    /* Google blue color - matches screenshot */
+    color: white;
+    transform: rotateY(180deg);
+    padding: 0;
+}
+
+.card-content {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1.5rem;
+    justify-content: center;
+    padding: 1rem;
 }
 
-.flashcard .question p,
-.flashcard .answer p {
-    font-size: 1.5rem;
+.answer-label {
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.card-content p {
+    font-size: 1.75rem;
     margin: 0;
+    line-height: 1.5;
+    max-width: 90%;
+    font-weight: 500;
 }
 
-.flashcard .answer {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px dashed #eee;
-    width: 100%;
+.tap-hint {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    /* Added for horizontal centering */
+    transform: translateX(-50%);
+    /* Added for horizontal centering */
+    font-size: 0.9rem;
+    color: #757575;
+    display: flex;
+    align-items: center;
+    animation: pulse 2s infinite;
+    gap: 0.5rem;
 }
 
+.tap-hint::before {
+    content: "👆";
+    font-size: 1rem;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+/* Controls styling */
 .controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
-.controls button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    cursor: pointer;
+.reveal-btn {
+    background-color: var(--primary-color);
+    color: white;
     border: none;
     border-radius: 4px;
-    background-color: #28a745;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.reveal-btn:hover {
+    background-color: #3367D6;
+    /* Darker blue on hover */
+}
+
+.rating-container {
+    margin-top: 1.5rem;
+}
+
+.rating-prompt {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.rating-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.rating-btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.got-it-btn {
+    background-color: #34A853;
+    /* Google green */
     color: white;
-    transition: background-color 0.2s ease;
 }
 
-.controls button:hover {
-    background-color: #218838;
+.got-it-btn:hover {
+    background-color: #2E9648;
 }
 
-.rating-buttons button {
-    margin: 0 0.5rem;
+.need-review-btn {
+    background-color: #EA4335;
+    /* Google red */
+    color: white;
 }
 
-.rating-buttons button:first-child {
-    background-color: #007bff;
-    /* Blue for Good */
+.need-review-btn:hover {
+    background-color: #D33C2F;
 }
 
-.rating-buttons button:first-child:hover {
-    background-color: #0056b3;
+.thumb-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
 }
 
-.rating-buttons button:last-child {
-    background-color: #dc3545;
-    /* Red for Bad */
-}
-
-.rating-buttons button:last-child:hover {
-    background-color: #c82333;
+/* Summary container styling */
+.summary-container {
+    text-align: center;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .summary-container h2 {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: 600;
 }
 
-.summary-container p {
+.completion-text {
+    color: var(--text-light);
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
+}
+
+.summary-header {
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.completion-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background-color: #4285F4;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+}
+
+.completion-icon {
+    color: white;
+    font-size: 3rem;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 12px;
+    min-width: 120px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.good-stats {
+    background-color: #E8F5E9;
+    /* Light green */
+    color: #34A853;
+    /* Google green */
+    border: 1px solid rgba(52, 168, 83, 0.2);
+}
+
+.bad-stats {
+    background-color: #FDECEA;
+    /* Light red */
+    color: #EA4335;
+    /* Google red */
+    border: 1px solid rgba(234, 67, 53, 0.2);
+}
+
+.unrated-stats {
+    background-color: #FFF3E0;
+    /* Light orange */
+    color: #FBBC04;
+    /* Google yellow */
+    border: 1px solid rgba(251, 188, 4, 0.2);
+}
+
+.stat-icon {
+    font-size: 1.8rem;
+    margin-top: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.summary-actions {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.primary-action-btn,
+.secondary-action-btn {
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.primary-action-btn {
+    background-color: #4285F4;
+    /* Google blue */
+    color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+}
+
+.primary-action-btn:hover {
+    background-color: #3367D6;
+    /* Darker blue */
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+}
+
+.secondary-action-btn {
+    background-color: white;
+    color: #4285F4;
+    border: 1px solid #4285F4;
+}
+
+.secondary-action-btn:hover {
+    background-color: rgba(66, 133, 244, 0.05);
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .flashcard {
+        height: 280px;
+    }
+
+    .card-content p {
+        font-size: 1.25rem;
+    }
+
+    .summary-stats {
+        gap: 1rem;
+        flex-direction: column;
+    }
+
+    .stat-item {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .rating-buttons {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .rating-btn {
+        width: 100%;
+    }
+
+    .controls {
+        margin-top: 1.5rem;
+    }
+}
+
+.stat-item {
+    padding: 0.75rem 1rem;
+    min-width: 80px;
 }
 </style>

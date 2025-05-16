@@ -49,31 +49,65 @@ const navigateToPractice = () => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #f0f0f0;
 }
 
 .subject-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .title {
-  color: #333;
+  color: var(--text-color);
   font-size: 1.5rem;
   margin-bottom: 0.8rem;
+  font-weight: 600;
 }
 
 .description {
   flex-grow: 1;
-  color: #666;
+  color: var(--text-light);
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 1rem;
+  margin-top: auto;
 }
 
 .card-count {
   font-size: 0.9rem;
-  color: #42b883;
-  font-weight: 600;
-  border-top: 1px solid #eee;
-  padding-top: 0.8rem;
+  font-weight: 500;
+}
+
+.card-badge {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+.card-action {
+  text-align: right;
+}
+
+.study-btn {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.subject-card:hover .study-btn {
+  color: var(--primary-hover);
 }
 </style>

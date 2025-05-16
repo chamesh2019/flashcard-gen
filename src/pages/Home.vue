@@ -10,7 +10,7 @@ const fetchSubjectsSummary = async () => {
   isLoading.value = true;
   errorMessage.value = '';
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/subjects-summary');
+    const response = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects-summary');
     if (!response.ok) {
       throw new Error(`Failed to fetch subjects summary: ${response.statusText} (${response.status})`);
     }
@@ -37,24 +37,41 @@ onMounted(() => {
 <template>
   <div class="container">
     <div class="page-header">
-      <h1 class="page-title">Flashcard Generator</h1>
-      <p class="page-description">Select a subject to view and practice with your flashcards, or add a new subject to
-        get started.</p>
-      <router-link to="/add-subject" class="btn btn-primary">
-        <span class="icon">✚</span> Add New Subject
-      </router-link>
+      <div class="header-content">
+        <h1 class="page-title">Flashcard Generator</h1>
+        <p class="page-description">Select a subject to view and practice with your flashcards, or add a new subject to
+          get started.</p>
+      </div>
+      <div class="header-actions">
+        <router-link to="/add-subject" class="btn btn-primary">
+          <span class="icon">✚</span> Add New Subject
+        </router-link>
+      </div>
     </div>
 
-    <div v-if="isLoading" class="loading-message">
-      <p>Loading subjects...</p>
+    <div v-if="isLoading" class="message-box info-message">
+      <div class="loading-indicator">
+        <span class="loading-spinner"></span>
+        <p>Loading subjects...</p>
+      </div>
     </div>
-    <div v-else-if="errorMessage" class="error-message">
+
+    <div v-else-if="errorMessage" class="message-box error-message">
       <p>{{ errorMessage }}</p>
-      <button @click="fetchSubjectsSummary">Try Again</button>
+      <button @click="fetchSubjectsSummary" class="btn btn-primary">Try Again</button>
     </div>
-    <div v-else-if="subjectsWithFlashcards.length === 0" class="no-subjects-message">
-      <p>No subjects found. Why not add one?</p>
+
+    <div v-else-if="subjectsWithFlashcards.length === 0" class="message-box warning-message">
+      <div class="empty-state">
+        <div class="empty-icon">📚</div>
+        <h3>No Subjects Found</h3>
+        <p>You don't have any subjects yet. Create your first subject to get started!</p>
+        <router-link to="/add-subject" class="btn btn-primary">
+          <span class="icon">✚</span> Add New Subject
+        </router-link>
+      </div>
     </div>
+
     <div v-else class="subjects-grid">
       <div v-for="subject in subjectsWithFlashcards" :key="subject.id" class="subject-item">
         <SubjectCard :id="subject.id" :title="subject.title" :description="subject.description"
@@ -65,39 +82,137 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+.page-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 3rem;
+.header-content {
+  max-width: 70%;
 }
 
-.header h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 2.2rem;
+  color: var(--text-color);
   margin-bottom: 0.5rem;
+  font-weight: 700;
 }
 
-.header p {
-  font-size: 1.2rem;
-  color: #666;
+.page-description {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.6;
 }
 
 .subjects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
-  row-gap: 3rem;
-  margin-bottom: 2rem;
+  row-gap: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 .subject-item {
-  min-height: 200px;
+  min-height: 220px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-icon {
+  font-size: 4rem;
   margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.empty-state p {
+  margin-bottom: 2rem;
+  color: var(--text-light);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Loading spinner */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Message boxes */
+.message-box {
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.info-message {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.error-message {
+  background-color: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+.warning-message {
+  background-color: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-content {
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .subjects-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .add-subject-button {

@@ -1,4 +1,4 @@
-from backend.views import create_app # Changed back to absolute import
+from functions.views import create_app # Changed back to absolute import
 
 app = create_app()
 

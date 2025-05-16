@@ -52,6 +52,7 @@ def generate_flashcards_from_markdown(file_path):
 
     content = """
     Generate flashcards from the following markdown document.
+    Use every small detail to create flashcards.
     Document:
     {}
     """.format(document)

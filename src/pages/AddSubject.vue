@@ -1,19 +1,36 @@
 <template>
-  <div class="add-subject-page">
-    <h1>Add New Subject</h1>
-    <form @submit.prevent="handleSubmit">
-      <div>
-        <label for="subjectName">Subject Name:</label>
-        <input type="text" id="subjectName" v-model="subjectName" required />
-      </div>
-      <div>
-        <label for="subjectDescription">Description (Optional):</label>
-        <textarea id="subjectDescription" v-model="subjectDescription"></textarea>
-      </div>
-      <button type="submit" :disabled="isLoading">{{ isLoading ? 'Adding...' : 'Add Subject' }}</button>
-      <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-    </form>
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Add New Subject</h1>
+      <p class="page-description">Create a new subject for organizing your flashcards</p>
+    </div>
+
+    <div class="card form-container">
+      <form @submit.prevent="handleSubmit" class="subject-form">
+        <div class="form-group">
+          <label for="subjectName">Subject Name:</label>
+          <input type="text" id="subjectName" v-model="subjectName" required placeholder="Enter subject name"
+            class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="subjectDescription">Description (Optional):</label>
+          <textarea id="subjectDescription" v-model="subjectDescription" placeholder="Enter subject description"
+            class="form-textarea"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary submit-button" :disabled="isLoading">
+          <span class="icon">{{ isLoading ? '⏳' : '📝' }}</span>
+          {{ isLoading ? 'Adding...' : 'Add Subject' }}
+        </button>
+
+        <div v-if="successMessage" class="message-box success-message">
+          <p>{{ successMessage }}</p>
+        </div>
+
+        <div v-if="errorMessage" class="message-box error-message">
+          <p>{{ errorMessage }}</p>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -34,7 +51,7 @@ const handleSubmit = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/subjects', {
+    const response = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,8 +66,10 @@ const handleSubmit = async () => {
 
     if (response.ok) {
       successMessage.value = `Subject "${data.name}" added successfully!`;
+      // Reset the form
       subjectName.value = '';
       subjectDescription.value = '';
+      // Clear the success message after 3 seconds
       setTimeout(() => {
         successMessage.value = '';
       }, 3000);
@@ -66,78 +85,97 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-.add-subject-page {
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.form-container {
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-form div {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #555;
-}
-
-input[type="text"],
-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1rem;
 }
 
-textarea {
-  min-height: 100px;
+.subject-form {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--border-radius);
+  background-color: white;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+  transition: var(--transition);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.form-textarea {
+  min-height: 120px;
   resize: vertical;
 }
 
-button[type="submit"] {
-  display: block;
+.submit-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
+  padding: 0.75rem;
   font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-button[type="submit"]:hover {
-  background-color: #0056b3;
+.submit-button:hover:not(:disabled) {
+  background-color: var(--primary-hover);
 }
 
-button[type="submit"]:disabled {
+.submit-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
 
-.success-message {
-  color: green;
-  margin-top: 1rem;
+.icon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.message-box {
   text-align: center;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  border: 1px solid var(--success-color);
+  color: #2e7d32;
 }
 
 .error-message {
-  color: red;
-  margin-top: 1rem;
-  text-align: center;
+  background-color: #ffebee;
+  border: 1px solid var(--danger-color);
+  color: #c62828;
 }
 </style>

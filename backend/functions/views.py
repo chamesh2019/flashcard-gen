@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import random
-from .utils import (
+from functions.utils import (
     get_all_subjects,
     add_new_subject,
     get_flashcards_for_subject,

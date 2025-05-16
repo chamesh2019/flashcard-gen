@@ -43,15 +43,13 @@ th {
 
 td {
   padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
-  vertical-align: middle;
 }
 
 tr:last-child td {
   border-bottom: none;
 }
 
-tbody tr {
+tbody {
   background-color: white;
   transition: var(--transition);
 }
@@ -234,7 +232,6 @@ textarea:focus {
 .flashcard {
   perspective: 1000px;
   height: 200px;
-  margin-bottom: 1.5rem;
   cursor: pointer;
 }
 
