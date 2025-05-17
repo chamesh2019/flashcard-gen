@@ -314,6 +314,8 @@ watch(() => route.params.subjectId, (newId) => {
     height: 100%;
     padding: 2em;
     transition: transform 0.6s;
+    transform-style: preserve-3d;
+    /* Crucial for 3D children positioning */
 }
 
 .flashcard.flipped .flashcard-inner {
@@ -669,43 +671,150 @@ watch(() => route.params.subjectId, (newId) => {
 /* Responsive design */
 @media (max-width: 640px) {
     .flashcard {
-        height: 280px;
+        min-height: 300px;
+        /* Adjusted from fixed height for flexibility */
+        height: auto;
+    }
+
+    .flashcard-inner {
+        padding: 1.5em;
+        /* Reduced padding */
+    }
+
+    .flashcard-front,
+    .flashcard-back {
+        width: calc(100% - 3em);
+        /* Adjusted for new inner padding */
+        height: calc(300px - 3em);
+        /* Adjusted for new inner padding */
+    }
+
+    .card-content {
+        padding: 0.75rem;
+        /* Reduced padding within content area */
     }
 
     .card-content p {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
+        /* Slightly reduced font size */
+        max-width: 100%;
+        /* Allow text to use more width */
     }
 
-    .summary-stats {
-        gap: 1rem;
-        flex-direction: column;
+    .flashcard-front .card-content p,
+    .flashcard-back .card-content p {
+        max-height: 180px;
+        /* Adjusted max-height for scrollable text area */
     }
 
-    .stat-item {
-        width: 100%;
-        max-width: 280px;
+    .answer-label {
+        margin-bottom: 1rem;
+        /* Reduced margin */
+        font-size: 0.8rem;
+    }
+
+    .tap-hint {
+        font-size: 0.8rem;
+        bottom: 1rem;
+        /* Adjusted position */
+    }
+
+    .rating-container {
+        margin-bottom: 1rem;
+        /* Reduced margin */
+    }
+
+    .rating-prompt {
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
     }
 
     .rating-buttons {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.75rem;
+        /* Reduced gap */
         width: 100%;
-        max-width: 280px;
+        max-width: 300px;
+        /* Consistent max-width for button groups */
         margin: 0 auto;
     }
 
     .rating-btn {
         width: 100%;
+        padding: 0.8rem 1rem;
+        /* Adjusted padding */
+        font-size: 0.95rem;
     }
 
-    .controls {
+    .summary-container {
+        padding: 1.5rem;
+        /* Reduced padding */
+    }
+
+    .summary-container h2 {
+        font-size: 1.6rem;
+        /* Adjusted font size */
+    }
+
+    .completion-text {
+        font-size: 1rem;
+    }
+
+    .completion-badge {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+
+    .completion-icon {
+        font-size: 2rem;
+    }
+
+    .summary-stats {
+        gap: 1rem;
+        flex-direction: column;
+        margin: 1.5rem 0;
+        /* Adjusted margin */
+    }
+
+    .stat-item {
+        width: 100%;
+        max-width: 300px;
+        /* Consistent max-width */
+        padding: 1rem;
+        /* Reduced padding */
+        min-width: auto;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        /* Adjusted font size */
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+    }
+
+    .summary-actions {
         margin-top: 1.5rem;
+        /* Adjusted margin */
+        gap: 1rem;
+        /* Reduced gap */
+        flex-direction: column;
+        /* Stack buttons for easier tapping */
+        align-items: center;
+        /* Center stacked buttons */
     }
-}
 
-.stat-item {
-    padding: 0.75rem 1rem;
-    min-width: 80px;
+    .primary-action-btn,
+    .secondary-action-btn {
+        padding: 0.8rem 1.5rem;
+        /* Adjusted padding */
+        font-size: 0.95rem;
+        width: 100%;
+        /* Make buttons full width */
+        max-width: 300px;
+        /* Consistent max-width */
+    }
 }
 </style>
-```

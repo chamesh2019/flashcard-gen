@@ -7,7 +7,17 @@
           FlashcardGen
         </router-link>
       </div>
-      <div class="navbar-menu">
+      <button 
+        class="navbar-toggle" 
+        @click="toggleMobileMenu" 
+        :class="{ 'is-active': isMobileMenuOpen }"
+        aria-label="menu" 
+        :aria-expanded="isMobileMenuOpen.toString()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="navbar-menu" :class="{ 'is-active': isMobileMenuOpen }">
         <router-link :to="{ path: '/', query: route.query }" class="navbar-item">
           <span class="icon">🏠</span> Home
         </router-link>
@@ -27,11 +37,16 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const isAdmin = computed(() => route.query.admin !== undefined);
+const isMobileMenuOpen = ref(false);
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+};
 </script>
 
 <style scoped>
@@ -80,87 +95,95 @@ const isAdmin = computed(() => route.query.admin !== undefined);
   align-items: center;
 }
 
-.navbar-menu .navbar-item {
-  color: var(--text-color);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: 0.5rem 1rem;
-  margin-left: 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Add base style for navbar-toggle, hidden on desktop */
+.navbar-toggle {
+  display: none;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  margin-left: auto; /* Push to the right if needed */
 }
 
-.icon {
-  margin-right: 0.5rem;
+.navbar-toggle span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-color, #333); /* Use a theme variable or a default */
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
+  border-radius: 1px;
 }
 
-.navbar-menu .navbar-item:hover {
-  color: var(--primary-color);
-  background-color: rgba(59, 130, 246, 0.05);
+.navbar-toggle.is-active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
 }
-
-.navbar-menu .router-link-active {
-  color: var(--primary-color);
-  background-color: rgba(59, 130, 246, 0.1);
-  font-weight: 500;
+.navbar-toggle.is-active span:nth-child(2) {
+  opacity: 0;
 }
-
-.navbar-menu .navbar-item::after {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--primary-color);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.navbar-menu .navbar-item:hover::after,
-.navbar-menu .router-link-active::after {
-  transform: scaleX(1);
+.navbar-toggle.is-active span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    /* Adjust overall navbar padding for mobile if needed, e.g., padding: 0.75rem 1rem; */
+    /* The container will handle internal spacing */
+  }
   .container {
-    flex-direction: column;
-    padding: 1rem;
+    flex-direction: row; /* Keep brand and toggle on one line */
+    justify-content: space-between; /* Space out brand and toggle */
+    align-items: center; /* Vertically align brand and toggle */
+    flex-wrap: wrap; /* Allow menu to wrap below */
+    padding: 0 1rem; /* Mobile padding for the container */
+    width: 100%; /* Ensure container uses full width of navbar */
   }
 
   .navbar-brand {
-    margin-bottom: 1rem;
+    margin-bottom: 0; /* Remove bottom margin from previous mobile style */
+    flex-shrink: 0; /* Prevent brand from shrinking too much */
+  }
+
+  .navbar-toggle {
+    display: block; /* Show hamburger on mobile */
   }
 
   .navbar-menu {
-    width: 100%;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    display: none; /* Hide menu by default on mobile */
+    width: 100%; /* Menu takes full width */
+    flex-basis: 100%; /* Ensure it takes a new line in flex-wrap scenario */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the left */
+    margin-top: 1rem; /* Space below the brand/toggle row */
+    /* Remove previous mobile styles like justify-content: space-around and flex-wrap: wrap */
+  }
+
+  .navbar-menu.is-active {
+    display: flex; /* Show menu when active */
   }
 
   .navbar-menu .navbar-item {
-    margin: 0.5rem;
+    width: 100%; /* Make items full width */
+    margin: 0 0 0.5rem 0; /* Top/bottom margin, remove side margins */
+    padding: 0.75rem 1rem; /* Adjust padding for better touch targets */
+    text-align: left; /* Align text to left */
+    border-radius: 4px; /* Keep consistent border-radius */
+    /* Optional: add a bottom border for separation */
+    /* border-bottom: 1px solid rgba(0,0,0,0.05); */
+  }
+  /* .navbar-menu .navbar-item:last-child {
+    border-bottom: none;
+  } */
+
+  /* Ensure icon and text alignment is good for vertical items */
+  .navbar-menu .navbar-item .icon {
+    margin-right: 0.75rem; /* Adjust icon spacing if needed */
   }
 
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .navbar-menu {
-    margin-top: 1rem;
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .navbar-menu .navbar-item {
-    margin-left: 0;
-    margin-bottom: 0.5rem;
-    width: 100%;
-    text-align: left;
-  }
+  /* Remove or adjust old mobile styles that are now superseded */
+  /* .navbar { flex-direction: column; align-items: flex-start; } -> No longer needed as container handles layout */
+  /* .navbar-brand { margin-bottom: 1rem; } -> Set to 0 */
+  /* .navbar-menu (old mobile) { width: 100%; justify-content: space-around; flex-wrap: wrap; } -> Replaced */
+  /* .navbar-menu .navbar-item (old mobile) { margin: 0.5rem; } -> Replaced */
 }
 </style>
