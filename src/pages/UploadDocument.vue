@@ -74,7 +74,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import config from '../config';
 
+const apiBaseUrl = config.apiBaseUrl;
 const selectedFile = ref(null);
 const selectedSubjectId = ref('');
 const subjects = ref([]);
@@ -108,9 +110,8 @@ const formatFileSize = (bytes) => {
 
 const fetchSubjects = async () => {
   isLoading.value = true;
-  error.value = '';
-  try {
-    const response = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects');
+  error.value = ''; try {
+    const response = await fetch(`${apiBaseUrl}/api/subjects`);
     if (!response.ok) {
       throw new Error(`Failed to fetch subjects: ${response.statusText}`);
     }
@@ -141,9 +142,8 @@ const handleSubmit = async () => {
   const formData = new FormData();
   formData.append('file', selectedFile.value);
   formData.append('subject_id', selectedSubjectId.value);
-
   try {
-    const response = await fetch('https://csmanager2020.pythonanywhere.com/api/document', {
+    const response = await fetch(`${apiBaseUrl}/api/document`, {
       method: 'POST',
       body: formData,
       // Don't set Content-Type header for FormData

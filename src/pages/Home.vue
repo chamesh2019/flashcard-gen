@@ -1,16 +1,17 @@
 <script setup>
 import SubjectCard from '../components/SubjectCard.vue';
 import { ref, onMounted } from 'vue';
+import config from '../config';
 
+const apiBaseUrl = config.apiBaseUrl;
 const subjectsWithFlashcards = ref([]);
 const isLoading = ref(true);
 const errorMessage = ref('');
 
 const fetchSubjectsSummary = async () => {
   isLoading.value = true;
-  errorMessage.value = '';
-  try {
-    const response = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects-summary');
+  errorMessage.value = ''; try {
+    const response = await fetch(`${apiBaseUrl}/api/subjects-summary`);
     if (!response.ok) {
       throw new Error(`Failed to fetch subjects summary: ${response.statusText} (${response.status})`);
     }

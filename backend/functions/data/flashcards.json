@@ -1,1 +1,814 @@
-{}
+{
+  "1": [
+    {
+      "id": "101",
+      "question": "What is the Little Man Computer (LMC)?",
+      "answer": "A simplified computer model designed to teach the basics of computer architecture and programming.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "102",
+      "question": "Who invented the Little Man Computer (LMC) and when?",
+      "answer": "Dr. Stuart Madnick in 1965.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "103",
+      "question": "What architecture does the LMC simulate?",
+      "answer": "Von Neumann architecture (where instructions and data share the same memory space).",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "104",
+      "question": "What does the 'Little Man' represent in the LMC?",
+      "answer": "The control unit of a CPU, handling fetching, decoding, execution, and I/O management.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "105",
+      "question": "What programming options are available for the LMC?",
+      "answer": "Machine Code or Assembly Language.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "106",
+      "question": "Describe the Fetch stage of the Instruction Cycle.",
+      "answer": "The CPU retrieves the instruction from memory (at the address indicated by the Program Counter) and loads it into the instruction register.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "107",
+      "question": "Describe the Decode stage of the Instruction Cycle.",
+      "answer": "The CPU interprets the instruction and determines the operation to be performed.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "108",
+      "question": "Describe the Execute stage of the Instruction Cycle.",
+      "answer": "The CPU performs the operation using the arithmetic logic unit (ALU) and other components to process data.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "109",
+      "question": "What is the Accumulator in the LMC?",
+      "answer": "A register that holds data being processed. It can store positive or negative values and is used for arithmetic operations. Stores the results of operations.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "110",
+      "question": "What is the Program Counter (PC) in the LMC?",
+      "answer": "Keeps track of the address of the current instruction. Fetches instructions from memory and increments to the next instruction after execution.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "111",
+      "question": "What is the purpose of memory in the LMC?",
+      "answer": "Stores both instructions and data. Limited to around 100 memory locations. Each location holds either an instruction or a data value.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "112",
+      "question": "What are Registers?",
+      "answer": "Small, high-speed memory locations used by the CPU to store data being processed.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "113",
+      "question": "Name the two main registers in LMC.",
+      "answer": "Accumulator and Program Counter.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "114",
+      "question": "What are Mnemonic Codes in LMC?",
+      "answer": "Human-readable representations of instructions that simplify programming by using easy-to-remember abbreviations (e.g., ADD, LDA, STA).",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "115",
+      "question": "What is Machine Code?",
+      "answer": "The binary code understood and executed by the computer. Each LMC instruction has a specific opcode representing its binary code.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "116",
+      "question": "What does the instruction LDA do?",
+      "answer": "Load the contents of address xx onto the accumulator.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "117",
+      "question": "What does the instruction STA do?",
+      "answer": "Store the contents of the accumulator to address xx.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "118",
+      "question": "What does the instruction ADD do?",
+      "answer": "Add the contents of address xx to the accumulator.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "119",
+      "question": "What does the instruction SUB do?",
+      "answer": "Subtract the contents address xx from the accumulator.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "120",
+      "question": "What does the instruction INP do?",
+      "answer": "Copy the value from the \"in box\" onto the accumulator.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "121",
+      "question": "What does the instruction OUT do?",
+      "answer": "Copy the value from the accumulator to the \"out box\".",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "122",
+      "question": "What does the instruction HLT do?",
+      "answer": "Stop the LMC simulator executing the program.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "123",
+      "question": "What does the instruction BRA do?",
+      "answer": "Jump unconditionally to memory location xx.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "124",
+      "question": "What does the instruction BRZ do?",
+      "answer": "If the contents of the accumulator are ZERO, set the program counter to address xx.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "125",
+      "question": "What does the instruction BRP do?",
+      "answer": "If the contents of the accumulator are ZERO or positive (i.e. the negative flag is not set), set the program counter to address xx.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "126",
+      "question": "What does the instruction DAT do?",
+      "answer": "Reserve as data the memory address reached when this instruction is compiled.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "127",
+      "question": "What is the first step of the LMC Execution Cycle?",
+      "answer": "Fetch: Retrieves instruction from memory using the Program Counter.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "128",
+      "question": "What is the second step of the LMC Execution Cycle?",
+      "answer": "Decode: Determines the operation to be performed.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "129",
+      "question": "What is the third step of the LMC Execution Cycle?",
+      "answer": "Execute: Performs the instruction, updating the Accumulator or memory.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "130",
+      "question": "What is the fourth step of the LMC Execution Cycle?",
+      "answer": "Update PC: Increments the Program Counter to point to the next instruction (or updates it to a new address in the case of a branch).",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "131",
+      "question": "What does memory store in LMC?",
+      "answer": "Both instructions and data for program execution.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "132",
+      "question": "What is the typical memory capacity in LMC?",
+      "answer": "Typically 100 memory locations.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "133",
+      "question": "How are instructions stored in memory?",
+      "answer": "Stored as binary codes (machine code).",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "134",
+      "question": "How are data values stored in memory?",
+      "answer": "Stored as decimal numbers.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "135",
+      "question": "What are the limitations of the LMC?",
+      "answer": "Limited instruction set and small memory size.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "136",
+      "question": "How can you overcome the limitations of the Little Man Computer (LMC)?",
+      "answer": "Using Subroutines, Labels & Branching, and Assembly Language.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "137",
+      "question": "What is the main purpose of LMC?",
+      "answer": "To provide a model for learning computer basics and programming based on Von Neumann architecture.",
+      "document_id": "f54c2636e69340418d4facaf9e844624"
+    },
+    {
+      "id": "138",
+      "question": "What is Computer Architecture?",
+      "answer": "The design and organization of computer systems, including the structure of components and how they interact with each other. It encompasses both hardware and software aspects and focuses on the functional behavior of the system as seen by the user or programmer.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "139",
+      "question": "What aspects does Computer Architecture determine?",
+      "answer": "A computer's performance, efficiency, and capabilities. It also influences power consumption, cost, and scalability.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "140",
+      "question": "Who conceptualized the Analytical Engine?",
+      "answer": "Charles Babbage in the 19th century.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "141",
+      "question": "What was the Analytical Engine?",
+      "answer": "A groundbreaking mechanical computing device that represented a significant leap forward in computing technology.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "142",
+      "question": "What was the purpose of the Analytical Engine's design?",
+      "answer": "Designed as a versatile, general-purpose machine to improve upon Babbage's earlier invention, the Difference Engine. It introduced the concept of a stored program, where instructions and data were stored on punched cards.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "143",
+      "question": "What were the key components of the Analytical Engine?",
+      "answer": "CPU (Mill), Memory Unit (Store), Input/Output Devices, Control Unit.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "144",
+      "question": "What advanced features did the Analytical Engine support?",
+      "answer": "Loops and conditional branching, capable of handling complex mathematical functions and operations, and designed with modularity.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "145",
+      "question": "What innovative concepts did the Analytical Engine pioneer?",
+      "answer": "Programmability and sequential control.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "146",
+      "question": "What is the legacy and impact of the Analytical Engine?",
+      "answer": "The detailed plans and designs had a profound influence on computing, laying the foundation for modern computer architecture. It inspired later pioneers like Ada Lovelace.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "147",
+      "question": "Who is Ada Lovelace?",
+      "answer": "A mathematician who collaborated with Charles Babbage and is often regarded as the first computer programmer.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "148",
+      "question": "What were Ada Lovelace's key contributions?",
+      "answer": "Published extensive notes on the Analytical Engine, included an algorithm for calculating Bernoulli numbers, and demonstrated the machine's ability to perform complex tasks beyond arithmetic.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "149",
+      "question": "What visionary insights did Ada Lovelace have?",
+      "answer": "Highlighted the concept of programmability, recognized the potential for conditional branching and loops, and described the idea of a general-purpose computing device.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "150",
+      "question": "Who is Alan Turing?",
+      "answer": "A British mathematician and computer scientist who revolutionized computation with his theoretical concept of the Turing Machine.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "151",
+      "question": "What are the key concepts of the Turing Machine?",
+      "answer": "Universal Computing Machine, Algorithmic Processing, and Tape-Based Model.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "152",
+      "question": "What is the significance of the Turing Machine?",
+      "answer": "Laid the foundation for modern computer science and the theory of computation. Demonstrated the limits of computation, including the concept of computability and undecidable problems. Influenced the design of programming languages, compilers, and modern computers.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "153",
+      "question": "Who developed the von Neumann architecture?",
+      "answer": "John von Neumann in the late 1940s.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "154",
+      "question": "What is the key concept of the von Neumann architecture?",
+      "answer": "A stored-program concept, where both instructions and data are stored in the same memory system.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "155",
+      "question": "What are the key components of the von Neumann architecture?",
+      "answer": "Central Processing Unit (CPU), Memory, Input/Output Devices, and Control Unit.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "156",
+      "question": "What are the key features of the von Neumann architecture?",
+      "answer": "Stored-Program Concept, Sequential Execution, and Fetch-Decode-Execute Cycle.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "157",
+      "question": "What is the most significant aspect of the von Neumann architecture?",
+      "answer": "The stored-program concept.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "158",
+      "question": "What is the key feature of unified memory in the stored-program concept?",
+      "answer": "Both instructions (programs) and data are stored in the same memory, enabling the computer to fetch, decode, and execute instructions directly from memory.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "159",
+      "question": "What is the impact of the stored-program concept on programming?",
+      "answer": "Software-Driven Behavior, Ease of Development, Foundation for Modern Computing.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "160",
+      "question": "What are the impacts and legacy of the von Neumann architecture?",
+      "answer": "It enabled the development of high-level programming languages and sophisticated software applications by separating the program's logic from the underlying hardware. The concept of stored-program computers transformed computers from specialized machines designed for specific tasks to general-purpose computing devices.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "161",
+      "question": "What is Instruction Set Architecture (ISA)?",
+      "answer": "Defines the instructions and operations a computer can execute, along with the programming model provided to software. It acts as a bridge between hardware and software, providing a standardized interface for programming.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "162",
+      "question": "What are the key components of ISA?",
+      "answer": "Instruction Set, Instruction Formats, Addressing Modes, Hardware Interface.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "163",
+      "question": "What are some examples of ISAs?",
+      "answer": "x86, ARM, MIPS",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "164",
+      "question": "What is Microarchitecture?",
+      "answer": "Refers to the internal design of a processor, including its data path, control unit, and memory hierarchy. It determines how the processor executes instructions, manages data transfers, and optimizes resource usage.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "165",
+      "question": "What are the key components of Microarchitecture?",
+      "answer": "Data Path, Control Unit, Memory Hierarchy",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "166",
+      "question": "What are some examples of Microarchitectures?",
+      "answer": "Intel Core, AMD Ryzen",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "167",
+      "question": "What is System Architecture?",
+      "answer": "Focuses on the overall structure and interconnections of a computer system's components. Ensures scalability, reliability, and performance of the entire system and balances hardware and software interactions for optimal functionality.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "168",
+      "question": "What are the key components of System Architecture?",
+      "answer": "Memory Subsystems, Input/Output Devices, Buses and Communication",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "169",
+      "question": "What are some examples of System Architectures?",
+      "answer": "Server Architectures, Embedded Systems",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "170",
+      "question": "What are the benefits of Architectural Classification?",
+      "answer": "Enables informed decisions in hardware design, software development, and system integration. Supports scalability, reliability, and performance optimization. Aids researchers, engineers, and programmers in innovating and optimizing computer systems.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "171",
+      "question": "Who proposed Flynn's Taxonomy of Computer Architecture?",
+      "answer": "Michael Flynn in 1966.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "172",
+      "question": "What is Flynn's Taxonomy?",
+      "answer": "Classifies computer architectures based on concurrent instruction streams (I) and data streams (D). It provides a framework for understanding and analyzing parallel computing architectures.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "173",
+      "question": "What are the four categories of Flynn's Taxonomy?",
+      "answer": "SISD (Single Instruction, Single Data), SIMD (Single Instruction, Multiple Data), MISD (Multiple Instruction, Single Data), MIMD (Multiple Instruction, Multiple Data).",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "174",
+      "question": "What is SISD (Single Instruction, Single Data)?",
+      "answer": "Executes one instruction on one data item at a time. Operates sequentially, performing one operation at a time.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "175",
+      "question": "What are the key characteristics of SISD?",
+      "answer": "Single Processor and Sequential Execution.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "176",
+      "question": "What are some examples of SISD?",
+      "answer": "Von Neumann Architecture, Simple Microcontrollers, Early single-processor systems.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "177",
+      "question": "What are the advantages of SISD?",
+      "answer": "Simplicity, Low Cost, Predictable Performance, Ease of Programming, Reliability.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "178",
+      "question": "What are the disadvantages of SISD?",
+      "answer": "Limited Performance, Scalability Issues, Inefficient for Modern Workloads, Resource Underutilization, Outdated for High-Performance Computing.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "179",
+      "question": "What is SIMD (Single Instruction, Multiple Data)?",
+      "answer": "Executes one instruction on multiple pieces of data simultaneously.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "180",
+      "question": "What are the execution modes of SIMD?",
+      "answer": "Sequential (using pipelining) and Parallel (utilizing multiple processors or cores).",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "181",
+      "question": "What are some applications of SIMD?",
+      "answer": "Modern GPUs, Vector Processors, Array Processors.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "182",
+      "question": "What are some examples of SIMD?",
+      "answer": "Intel SSE/AVX, NVIDIA CUDA, Graphics Processing, Scientific Computing",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "183",
+      "question": "What are the advantages of SIMD?",
+      "answer": "High Performance, Efficiency, Scalability, Energy Efficiency, Wide Applications.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "184",
+      "question": "What are the disadvantages of SIMD?",
+      "answer": "Limited Flexibility, Complex Programming, Hardware Dependency, Data Alignment Issues, Underutilization for Non-Parallel Tasks.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "185",
+      "question": "What is MISD (Multiple Instruction, Single Data)?",
+      "answer": "Multiple Processing Units with each unit processing the same data but performs different operations. Independent Instruction Streams where each processor follows its own set of instructions.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "186",
+      "question": "What are the key concepts of MISD?",
+      "answer": "Multiple processors work on the same data set but execute different instructions simultaneously.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "187",
+      "question": "What is the structure of MISD?",
+      "answer": "A single data stream flows through a linear array of processors. Each processor operates on the data independently using its own instruction stream.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "188",
+      "question": "What are the use cases of MISD?",
+      "answer": "Fault-Tolerant Systems, Encryption and Decryption, Image Processing",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "189",
+      "question": "What are the advantages of MISD?",
+      "answer": "Theoretical Interest, Specialized Use Cases, Conceptual Framework",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "190",
+      "question": "What are the disadvantages of MISD?",
+      "answer": "No Practical Implementations, Limited Applicability, Complexity, Resource Underutilization, Lack of Scalability.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "191",
+      "question": "What is MIMD (Multiple Instruction, Multiple Data)?",
+      "answer": "A parallel computing architecture where multiple processors execute different instructions on different data sets simultaneously.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "192",
+      "question": "What are the key features of MIMD?",
+      "answer": "Independent Processors, Concurrent Execution",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "193",
+      "question": "What are some use cases of MIMD?",
+      "answer": "High-Performance Computing (HPC), Distributed Systems, Multicore Processors.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "194",
+      "question": "What are some examples of MIMD?",
+      "answer": "Supercomputers, Multicore CPUs.",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "195",
+      "question": "What are the advantages of MIMD?",
+      "answer": "High Performance, Flexibility, Scalability, Efficient Resource Utilization, Distributed Memory Architecture, Fault Tolerance",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "196",
+      "question": "What are the disadvantages of MIMD?",
+      "answer": "Complexity, Communication Overhead, Cost, Programming Challenges, Load Balancing, Memory Management",
+      "document_id": "cd7ab56115a3441a846d31887e4a4dd4"
+    },
+    {
+      "id": "197",
+      "question": "What is the Little Man Computer (LMC)?",
+      "answer": "A simplified computer model designed to teach the basics of computer architecture and programming.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "198",
+      "question": "Who invented the LMC and when?",
+      "answer": "Dr. Stuart Madnick in 1965.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "199",
+      "question": "What is the Little Man in the LMC conceptually?",
+      "answer": "Represents the control unit of a CPU, handling fetching, decoding, execution, and I/O management.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "200",
+      "question": "What are the programming options for the LMC?",
+      "answer": "Machine Code or Assembly Language.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "201",
+      "question": "What architecture does the LMC simulate?",
+      "answer": "Von Neumann Architecture (instructions and data share the same memory space).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "202",
+      "question": "What are the three stages of the instruction cycle?",
+      "answer": "Fetch, Decode, Execute.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "203",
+      "question": "What happens during the Fetch stage?",
+      "answer": "The CPU retrieves the instruction from memory and loads it into the instruction register.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "204",
+      "question": "What happens during the Decode stage?",
+      "answer": "The CPU interprets the instruction and determines the operation to be performed.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "205",
+      "question": "What happens during the Execute stage?",
+      "answer": "The CPU performs the operation using the arithmetic logic unit (ALU) and other components to process data.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "206",
+      "question": "What are the two main parts of the instruction cycle?",
+      "answer": "The Fetch Portion (retrieving instruction) and the Execute Portion (performing the work).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "207",
+      "question": "What are the main components of the Little Man Computer?",
+      "answer": "Accumulator, Program Counter, and Memory.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "208",
+      "question": "What is the purpose of the Accumulator?",
+      "answer": "A register that holds data being processed. Can store positive or negative values. Used for arithmetic operations like ADD and SUB. Stores the results of operations.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "209",
+      "question": "What is the purpose of the Program Counter (PC)?",
+      "answer": "Keeps track of the address of the current instruction. Fetches instructions from memory. Increments to the next instruction after execution.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "210",
+      "question": "What is the purpose of Memory in the LMC?",
+      "answer": "Stores both instructions and data. Limited to around 100 memory locations. Each location holds either an instruction or a data value.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "211",
+      "question": "What are Registers?",
+      "answer": "Small, high-speed memory locations used by the CPU to store data being processed.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "212",
+      "question": "What are the two Main Registers in LMC?",
+      "answer": "Accumulator and Program Counter.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "213",
+      "question": "What is an Instruction Set?",
+      "answer": "The set of instructions that the Little Man Computer can execute.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "214",
+      "question": "What is the purpose of Mnemonic Code in LMC?",
+      "answer": "Simplifies programming by using easy-to-remember abbreviations for instructions.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "215",
+      "question": "What is Machine Code?",
+      "answer": "The binary code understood and executed by the computer. Each instruction has a specific opcode representing its binary code.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "216",
+      "question": "What does the LDA instruction do?",
+      "answer": "Load the contents of an address into the Accumulator (LDA).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "217",
+      "question": "What does the STA instruction do?",
+      "answer": "Store the contents of the Accumulator to an address (STA).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "218",
+      "question": "What does the ADD instruction do?",
+      "answer": "Add the contents of an address to the Accumulator (ADD).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "219",
+      "question": "What does the SUB instruction do?",
+      "answer": "Subtract the contents of an address from the Accumulator (SUB).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "220",
+      "question": "What does the INP instruction do?",
+      "answer": "Copy the value from the input to the Accumulator (INP).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "221",
+      "question": "What does the OUT instruction do?",
+      "answer": "Copy the value from the Accumulator to the output (OUT).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "222",
+      "question": "What does the HLT instruction do?",
+      "answer": "Stop the LMC simulator executing the program (HLT).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "223",
+      "question": "What does the BRA instruction do?",
+      "answer": "Jump unconditionally to a memory location (BRA).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "224",
+      "question": "What does the BRZ instruction do?",
+      "answer": "If the contents of the Accumulator are ZERO, set the program counter to a specified address (BRZ).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "225",
+      "question": "What does the BRP instruction do?",
+      "answer": "If the contents of the Accumulator are ZERO or positive, set the program counter to a specified address (BRP).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "226",
+      "question": "What does the DAT instruction do?",
+      "answer": "Reserve as data the memory address reached when this instruction is compiled. A value N can be stored at the memory address by using DAT N.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "227",
+      "question": "What are the steps of the Execution Cycle?",
+      "answer": "Fetch, Decode, Execute, Update PC.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "228",
+      "question": "What is the storage type for Instructions in LMC memory?",
+      "answer": "Stored as binary codes (machine code).",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "229",
+      "question": "What is the storage type for Data values in LMC memory?",
+      "answer": "Stored as decimal numbers.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "230",
+      "question": "What is the memory capacity of the LMC?",
+      "answer": "Typically 100 memory locations.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "231",
+      "question": "What are the limitations of the LMC?",
+      "answer": "Limited Instruction Set and Small Memory Size.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "232",
+      "question": "How can you overcome the limitations of the LMC?",
+      "answer": "Using Subroutines, Labels & Branching, and Assembly Language.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "233",
+      "question": "In LMC, what is the purpose of the Accumulator?",
+      "answer": "Holds data being processed.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "234",
+      "question": "In LMC, what is the purpose of the Program Counter (PC)?",
+      "answer": "Tracks the next instruction.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    },
+    {
+      "id": "235",
+      "question": "In LMC, what does Memory store?",
+      "answer": "Instructions (binary) and data (decimal), limited to 100 locations.",
+      "document_id": "cef012f49e574e4a860707c91651f716"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import AddSubject from "./pages/AddSubject.vue";
 import UploadDocument from "./pages/UploadDocument.vue";
 import FlashcardPractice from "./pages/FlashcardPractice.vue";
 import DocumentInfo from "./pages/DocumentInfo.vue";
+import DocumentSelection from "./pages/DocumentSelection.vue";
 
 const routes = [
   {
@@ -27,7 +28,13 @@ const routes = [
     component: DocumentInfo,
   },
   {
-    path: "/flashcards/:subjectId", // Route parameter for subject ID
+    path: "/subjects/:subjectId/documents",
+    name: "DocumentSelection",
+    component: DocumentSelection,
+    props: true,
+  },
+  {
+    path: "/flashcards/:subjectId/:documentId?", // Optional documentId parameter
     name: "FlashcardPractice",
     component: FlashcardPractice,
     props: true, // Pass route params as props to the component

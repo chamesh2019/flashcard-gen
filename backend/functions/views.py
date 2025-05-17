@@ -15,7 +15,9 @@ from functions.utils import (
     mark_document_as_processed,
     load_data,
     DOCUMENTS_FOLDER,
-    DOCUMENT_INDEX_FILE
+    DOCUMENT_INDEX_FILE,
+    get_documents_by_subject,
+    get_flashcards_for_document
 )
 
 app = Flask(__name__)
@@ -159,14 +161,13 @@ def api_process_document(document_id):
         
         # Generate flashcards from the markdown document
         flashcards = generate_flashcards_from_markdown(document_path)
-        
-        # Save the flashcards directly to the subject
+          # Save the flashcards directly to the subject, including document_id
         count = 0
         for flashcard in flashcards:
             add_flashcard_to_subject(document['subject_id'], {
                 'question': flashcard['question'],
                 'answer': flashcard['answer']
-            })
+            }, document_id)  # Pass document_id to associate flashcards with this document
             count += 1
         
         # Mark the document as processed
@@ -182,6 +183,69 @@ def api_process_document(document_id):
         error_traceback = traceback.format_exc()
         print(f"Error processing document: {str(e)}\n{error_traceback}")
         return jsonify({'error': f'Error processing document: {str(e)}'}), 500
+
+@app.route('/api/subjects/<subject_id>/documents', methods=['GET'])
+def api_get_documents_by_subject(subject_id):
+    """API endpoint to get all documents for a specific subject."""
+    subjects = get_all_subjects()
+
+    if not any(s['id'] == str(subject_id) for s in subjects):
+        return jsonify({'error': 'Subject not found'}), 404
+    
+    documents = get_documents_by_subject(subject_id)
+    return jsonify(documents)
+
+@app.route('/api/subjects/<subject_id>/documents/<document_id>/flashcards', methods=['GET'])
+def api_get_flashcards_by_document(subject_id, document_id):
+    """API endpoint to get flashcards for a specific document within a subject.
+    """
+    subjects = get_all_subjects()
+
+    if not any(s['id'] == str(subject_id) for s in subjects):
+        return jsonify({'error': 'Subject not found'}), 404
+    
+    # Get flashcards for this specific document
+    flashcards = get_flashcards_for_document(subject_id, document_id)
+    
+    # If we have flashcards, return them even if the document is deleted
+    if flashcards:
+        # Shuffle the flashcards for randomized practice
+        random.shuffle(flashcards)
+        return jsonify(flashcards)
+    
+    # If no flashcards found, check if the document exists (might not be processed)
+    document_index = load_data(DOCUMENT_INDEX_FILE)
+    document = next((doc for doc in document_index if doc['id'] == document_id and doc['subject_id'] == str(subject_id)), None)
+    
+    if not document:
+        return jsonify({'error': 'Document not found'}), 404
+    
+    if document.get('deleted', False):
+        return jsonify({'error': 'Document has been deleted and has no associated flashcards'}), 404
+    
+    # Document exists but has no flashcards, check if it's been processed
+    if not document.get('processed', False):
+        return jsonify({'error': 'Document has not been processed yet'}), 400
+    
+    # Document is processed but has no flashcards (unusual case)
+    return jsonify([])  # Return empty array
+
+@app.route('/api/subjects/<subject_id>/documents/<document_id>/info', methods=['GET'])
+def api_get_document_info(subject_id, document_id):
+    """API endpoint to get info for a specific document, including deleted ones."""
+    subjects = get_all_subjects()
+
+    if not any(s['id'] == str(subject_id) for s in subjects):
+        return jsonify({'error': 'Subject not found'}), 404
+    
+    # Check for the document in the document index, including deleted ones
+    document_index = load_data(DOCUMENT_INDEX_FILE)
+    document = next((doc for doc in document_index if doc['id'] == document_id and doc['subject_id'] == str(subject_id)), None)
+    
+    if document:
+        return jsonify(document)
+    else:
+        return jsonify({'error': 'Document not found'}), 404
 
 def create_app():
     """Application factory function."""

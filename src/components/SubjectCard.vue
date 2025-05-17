@@ -24,7 +24,7 @@ const router = useRouter();
 
 const navigateToPractice = () => {
   if (props.id) {
-    router.push(`/flashcards/${props.id}`);
+    router.push(`/subjects/${props.id}/documents`);
   }
 };
 </script>
