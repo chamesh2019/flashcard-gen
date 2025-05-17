@@ -2,7 +2,10 @@
     <div class="container">
         <div class="page-header">
             <h1 class="page-title">Flashcard Practice</h1>
-            <p v-if="subjectName" class="page-description">Studying: {{ subjectName }}</p>
+            <p class="page-description">
+                Studying: <strong>{{ subjectName }}</strong>
+                <span v-if="documentName"> - {{ documentName }}</span>
+            </p>
         </div>
 
         <div v-if="isLoading" class="message-box info-message">
@@ -16,9 +19,8 @@
             <p>{{ errorMessage }}</p>
             <router-link to="/" class="btn btn-primary">Back to Home</router-link>
         </div>
-
         <div v-else-if="!currentFlashcard && !isPracticeFinished" class="message-box warning-message">
-            <p>No flashcards found for {{ subjectName }}.</p>
+            <p>No flashcards found for {{ subjectName }}{{ documentName ? ` - ${documentName}` : '' }}.</p>
             <router-link to="/" class="btn btn-primary">Back to Home</router-link>
         </div>
 
@@ -53,6 +55,9 @@
                     <button @click="rateFlashcard('bad')" class="rating-btn need-review-btn">
                         <span class="thumb-icon">👎</span> Need Review
                     </button>
+                    <button @click="handleIgnoreFlashcard" class="rating-btn ignore-btn">
+                        <span class="ignore-icon">🙈</span> Ignore
+                    </button>
                 </div>
             </div>
 
@@ -65,7 +70,11 @@
                     <div class="completion-icon">✓</div>
                 </div>
                 <h2>Practice Complete!</h2>
-                <p class="completion-text">You've completed all flashcards for <strong>{{ subjectName }}</strong></p>
+                <p class="completion-text">
+                    You've completed all flashcards for
+                    <strong>{{ subjectName }}</strong>
+                    <span v-if="documentName"> - <strong>{{ documentName }}</strong></span>
+                </p>
             </div>
 
             <div class="summary-stats">
@@ -85,13 +94,12 @@
                     <span class="stat-icon">❓</span>
                 </div>
             </div>
-
             <div class="summary-actions">
                 <button @click="restartPractice" class="primary-action-btn">
                     Practice Again
                 </button>
-                <router-link to="/" class="secondary-action-btn">
-                    Back to Home
+                <router-link :to="documentId ? `/subjects/${subjectId}/documents` : '/'" class="secondary-action-btn">
+                    {{ documentId ? 'Back to Documents' : 'Back to Home' }}
                 </router-link>
             </div>
         </div>
@@ -101,16 +109,21 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import config from '../config';
 
 const route = useRoute();
 const router = useRouter();
+const apiBaseUrl = config.apiBaseUrl;
 
 const subjectId = ref(null);
+const documentId = ref(null);
 const subjectName = ref('');
-const flashcards = ref([]);
+const documentName = ref('');
+const flashcards = ref([]); // Will store filtered flashcards
 const currentIndex = ref(0);
 const showAnswer = ref(false);
 const ratings = ref({}); // { flashcardId: 'good' | 'bad' }
+const ignoredFlashcardIds = ref(new Set()); // Stores IDs of ignored flashcards for the current subject
 
 const isLoading = ref(true);
 const errorMessage = ref('');
@@ -124,20 +137,63 @@ const currentFlashcard = computed(() => {
 });
 
 const loadRatings = () => {
-    const storedRatings = localStorage.getItem(`flashcardRatings_${subjectId.value}`);
+    if (!subjectId.value) return;
+
+    // If we have a document, use document-specific ratings
+    const storageKey = documentId.value
+        ? `flashcardRatings_${subjectId.value}_doc_${documentId.value}`
+        : `flashcardRatings_${subjectId.value}`;
+
+    const storedRatings = localStorage.getItem(storageKey);
     if (storedRatings) {
         ratings.value = JSON.parse(storedRatings);
+    } else {
+        ratings.value = {};
     }
 };
 
 const saveRatings = () => {
-    localStorage.setItem(`flashcardRatings_${subjectId.value}`, JSON.stringify(ratings.value));
+    if (!subjectId.value) return;
+
+    // Use document-specific key if we have a documentId
+    const storageKey = documentId.value
+        ? `flashcardRatings_${subjectId.value}_doc_${documentId.value}`
+        : `flashcardRatings_${subjectId.value}`;
+
+    localStorage.setItem(storageKey, JSON.stringify(ratings.value));
+};
+
+const loadIgnoredFlashcards = () => {
+    if (!subjectId.value) return;
+
+    // Use document-specific key if we have a documentId
+    const storageKey = documentId.value
+        ? `ignoredFlashcards_${subjectId.value}_doc_${documentId.value}`
+        : `ignoredFlashcards_${subjectId.value}`;
+
+    const storedIgnored = localStorage.getItem(storageKey);
+    if (storedIgnored) {
+        ignoredFlashcardIds.value = new Set(JSON.parse(storedIgnored));
+    } else {
+        ignoredFlashcardIds.value = new Set();
+    }
+};
+
+const saveIgnoredFlashcards = () => {
+    if (!subjectId.value) return;
+
+    // Use document-specific key if we have a documentId
+    const storageKey = documentId.value
+        ? `ignoredFlashcards_${subjectId.value}_doc_${documentId.value}`
+        : `ignoredFlashcards_${subjectId.value}`;
+
+    localStorage.setItem(storageKey, JSON.stringify(Array.from(ignoredFlashcardIds.value)));
 };
 
 const fetchSubjectDetails = async () => {
     // Attempt to get subject name from subjects-summary first for efficiency
     try {
-        const summaryResponse = await fetch(`https://csmanager2020.pythonanywhere.com/api/subjects-summary`);
+        const summaryResponse = await fetch(`${apiBaseUrl}/api/subjects-summary`);
         if (!summaryResponse.ok) throw new Error('Failed to fetch subjects summary');
         const summaryData = await summaryResponse.json();
         const foundSubject = summaryData.find(s => s.id === subjectId.value);
@@ -150,13 +206,6 @@ const fetchSubjectDetails = async () => {
     }
     // Fallback or if not found in summary (should ideally not happen if summary is up-to-date)
     try {
-        // This endpoint doesn't exist yet, we might need to create it or adjust
-        // For now, we'll assume subject name might be part of flashcard data or we skip detailed name fetching
-        // Or, we can create a GET /api/subjects/<id> endpoint
-        // For simplicity, if not found in summary, we might just use "Subject ID: X"
-        // Let's assume for now we will get it from the flashcards endpoint or another source if needed.
-        // For now, if not in summary, we won't have a specific name beyond ID.
-        // A dedicated /api/subjects/:id endpoint would be better.
         subjectName.value = `Subject ${subjectId.value}`; // Placeholder if not found in summary
     } catch (error) {
         console.error('Error fetching subject details:', error);
@@ -164,24 +213,76 @@ const fetchSubjectDetails = async () => {
     }
 };
 
+const fetchDocumentDetails = async () => {
+    // If we have a document ID, fetch the document details
+    if (!documentId.value) return;
+
+    try {
+        // First try to get the document from the regular document list (non-deleted docs)
+        const documentsResponse = await fetch(`${apiBaseUrl}/api/subjects/${subjectId.value}/documents`);
+        if (!documentsResponse.ok) throw new Error('Failed to fetch documents');
+
+        const documents = await documentsResponse.json();
+        const document = documents.find(d => d.id === documentId.value);
+
+        if (document) {
+            documentName.value = document.original_filename;
+            return;
+        }
+
+        // If not found in regular documents, check if it's a deleted document with flashcards
+        // Get the flashcards first to confirm they exist
+        const flashcardsResponse = await fetch(`${apiBaseUrl}/api/subjects/${subjectId.value}/documents/${documentId.value}/flashcards`);
+        if (flashcardsResponse.ok) {
+            // If we can get flashcards, show it's a deleted document
+            documentName.value = `Document (Deleted)`;
+        } else {
+            // If no flashcards found either, use generic name
+            documentName.value = `Unknown Document`;
+        }
+    } catch (error) {
+        console.warn("Couldn't fetch document details:", error);
+        documentName.value = `Document ${documentId.value}`;
+    }
+};
+
 const fetchFlashcards = async () => {
     isLoading.value = true;
     errorMessage.value = '';
-    isPracticeFinished.value = false;
+    isPracticeFinished.value = false; // Reset practice finished state
+
+    // Ensure ignored list is loaded for the current subject *before* fetching
+    // This is typically handled by onMounted or subjectId watcher calling loadIgnoredFlashcards
+
     try {
         await fetchSubjectDetails(); // Get subject name
 
-        const response = await fetch(`https://csmanager2020.pythonanywhere.com/api/subjects/${subjectId.value}/flashcards`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch flashcards: ${response.statusText} (${response.status})`);
+        let allFlashcards = []; if (documentId.value) {
+            await fetchDocumentDetails(); // Get document name if we have a document ID
+
+            // Fetch document-specific flashcards
+            const response = await fetch(`${apiBaseUrl}/api/subjects/${subjectId.value}/documents/${documentId.value}/flashcards`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch flashcards: ${response.statusText} (${response.status})`);
+            }
+            allFlashcards = await response.json();
+        } else {
+            // Fetch all subject flashcards (legacy behavior)
+            const response = await fetch(`${apiBaseUrl}/api/subjects/${subjectId.value}/flashcards`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch flashcards: ${response.statusText} (${response.status})`);
+            }
+            allFlashcards = await response.json();
         }
-        const data = await response.json();
-        flashcards.value = data;
+
+        // Filter out ignored flashcards
+        flashcards.value = allFlashcards.filter(fc => !ignoredFlashcardIds.value.has(fc.id));
+
         currentIndex.value = 0;
         showAnswer.value = false;
-        if (data.length === 0) {
-            // No flashcards, practice can be considered finished or show a specific message
-            // isPracticeFinished.value = true; // Or handle with a specific no-flashcards message
+        if (flashcards.value.length === 0) {
+            // This message will now also show if all cards are ignored or no cards exist
+            // isPracticeFinished.value = true; // Let the template handle "No flashcards found"
         }
     } catch (error) {
         console.error('Error fetching flashcards:', error);
@@ -202,13 +303,21 @@ const rateFlashcard = (rating) => {
     }
 };
 
+const handleIgnoreFlashcard = () => {
+    if (currentFlashcard.value) {
+        ignoredFlashcardIds.value.add(currentFlashcard.value.id);
+        saveIgnoredFlashcards();
+        nextFlashcard(); // Move to the next available card
+    }
+};
+
 const nextFlashcard = () => {
     if (currentIndex.value < flashcards.value.length - 1) {
         currentIndex.value++;
         showAnswer.value = false;
     } else {
         isPracticeFinished.value = true;
-        // All flashcards reviewed
+        // All (non-ignored) flashcards reviewed
     }
 };
 
@@ -216,42 +325,64 @@ const goodRatings = computed(() => Object.values(ratings.value).filter(r => r ==
 const badRatings = computed(() => Object.values(ratings.value).filter(r => r === 'bad').length);
 const unratedCount = computed(() => {
     const ratedIds = Object.keys(ratings.value);
+    // Unrated count should be based on the currently shown (non-ignored) flashcards
     return flashcards.value.filter(fc => !ratedIds.includes(fc.id.toString())).length;
 });
+
 
 const restartPractice = () => {
     ratings.value = {}; // Clear ratings for this subject for a fresh start
     saveRatings();      // Persist cleared ratings
+    // Ignored flashcards are NOT cleared by restartPractice, they remain ignored.
     currentIndex.value = 0;
     showAnswer.value = false;
     isPracticeFinished.value = false;
-    // Optionally re-fetch if data could have changed, but for now just reset state
-    if (flashcards.value.length === 0 && !errorMessage.value) { // If there were no flashcards to begin with
-        fetchFlashcards(); // Try fetching again
+
+    // Re-filter flashcards if needed, or simply reset view.
+    // If flashcards.value could have changed server-side, a full fetchFlashcards() might be desired.
+    // For now, just resetting the index is enough as ignored list persists.
+    if (flashcards.value.length === 0 && !errorMessage.value) {
+        // If there were no flashcards to begin with (e.g., all were ignored or subject was empty)
+        fetchFlashcards(); // Try fetching and filtering again
     }
 };
 
 
 onMounted(() => {
     subjectId.value = route.params.subjectId;
+    documentId.value = route.params.documentId || null; // Get documentId from route params
+
     if (subjectId.value) {
+        loadIgnoredFlashcards(); // Load ignored first
         loadRatings();
-        fetchFlashcards();
+        fetchFlashcards(); // Then fetch, which will use the ignored list
     } else {
         errorMessage.value = "No subject ID provided.";
         isLoading.value = false;
     }
 });
 
-// Watch for route changes if the user navigates between different subject practices directly
-watch(() => route.params.subjectId, (newId) => {
-    if (newId && newId !== subjectId.value) {
-        subjectId.value = newId;
-        ratings.value = {}; // Reset ratings for the new subject
-        loadRatings();
-        fetchFlashcards();
+// Watch for changes to route parameters
+watch(
+    () => [route.params.subjectId, route.params.documentId],
+    ([newSubjectId, newDocumentId]) => {
+        const subjectChanged = newSubjectId && newSubjectId !== subjectId.value;
+        const documentChanged = newDocumentId !== documentId.value;
+
+        if (subjectChanged || documentChanged) {
+            subjectId.value = newSubjectId || subjectId.value;
+            documentId.value = newDocumentId || null;
+
+            // Reset state for the new selection
+            ratings.value = {};
+            ignoredFlashcardIds.value = new Set();
+
+            loadIgnoredFlashcards();
+            loadRatings();
+            fetchFlashcards();
+        }
     }
-});
+);
 
 </script>
 
@@ -505,6 +636,22 @@ watch(() => route.params.subjectId, (newId) => {
 }
 
 .thumb-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.ignore-btn {
+    background-color: #757575;
+    /* Grey color for ignore */
+    color: white;
+}
+
+.ignore-btn:hover {
+    background-color: #616161;
+    /* Darker grey on hover */
+}
+
+.ignore-icon {
     margin-right: 0.5rem;
     font-size: 1.1rem;
 }

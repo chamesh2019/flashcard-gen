@@ -37,7 +37,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import config from '../config';
 
+const apiBaseUrl = config.apiBaseUrl;
 const subjectName = ref('');
 const subjectDescription = ref('');
 const isLoading = ref(false);
@@ -49,9 +51,8 @@ const handleSubmit = async () => {
   isLoading.value = true;
   successMessage.value = '';
   errorMessage.value = '';
-
   try {
-    const response = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects', {
+    const response = await fetch(`${apiBaseUrl}/api/subjects`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

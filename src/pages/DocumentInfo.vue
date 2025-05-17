@@ -55,8 +55,7 @@
                                 {{ doc.processed ? 'Processed' : 'Pending' }}
                             </span>
                         </td>
-                        <td class="action-buttons">
-                            <a :href="`https://csmanager2020.pythonanywhere.com/api/documents/${doc.id}/download`"
+                        <td class="action-buttons"> <a :href="`${apiBaseUrl}/api/documents/${doc.id}/download`"
                                 class="btn btn-primary">
                                 <span class="icon">⬇️</span> Download
                             </a>
@@ -80,7 +79,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import config from '../config';
 
+const apiBaseUrl = config.apiBaseUrl;
 const documents = ref([]);
 const subjects = ref([]);
 const isLoading = ref(true);
@@ -93,14 +94,13 @@ const fetchDocuments = async () => {
     isLoading.value = true;
     error.value = '';
 
-    try {
-        // Fetch documents
-        const documentsResponse = await fetch('https://csmanager2020.pythonanywhere.com/api/documents');
+    try {        // Fetch documents
+        const documentsResponse = await fetch(`${apiBaseUrl}/api/documents`);
         if (!documentsResponse.ok) {
             throw new Error(`Failed to fetch documents: ${documentsResponse.statusText}`);
         }
         documents.value = await documentsResponse.json();        // Also fetch subjects to display subject names
-        const subjectsResponse = await fetch('https://csmanager2020.pythonanywhere.com/api/subjects');
+        const subjectsResponse = await fetch(`${apiBaseUrl}/api/subjects`);
         if (!subjectsResponse.ok) {
             throw new Error(`Failed to fetch subjects: ${subjectsResponse.statusText}`);
         }
@@ -130,10 +130,8 @@ const formatDate = (dateString) => {
 };
 
 const processDocument = async (doc) => {
-    processingDocId.value = doc.id;
-
-    try {
-        const response = await fetch(`https://csmanager2020.pythonanywhere.com/api/documents/${doc.id}/process`, {
+    processingDocId.value = doc.id; try {
+        const response = await fetch(`${apiBaseUrl}/api/documents/${doc.id}/process`, {
             method: 'POST'
         });
 
@@ -159,14 +157,12 @@ const processDocument = async (doc) => {
 };
 
 const deleteDocument = async (doc) => {
-    if (!confirm(`Are you sure you want to delete "${doc.original_filename}"?`)) {
+    if (!confirm(`Are you sure you want to delete "${doc.original_filename}"?\n\nNote: Any flashcards generated from this document will be preserved and will still be available for practice.`)) {
         return;
     }
 
-    deletingDocId.value = doc.id;
-
-    try {
-        const response = await fetch(`https://csmanager2020.pythonanywhere.com/api/documents/${doc.id}`, {
+    deletingDocId.value = doc.id; try {
+        const response = await fetch(`${apiBaseUrl}/api/documents/${doc.id}`, {
             method: 'DELETE'
         });
 
@@ -176,11 +172,9 @@ const deleteDocument = async (doc) => {
         }
 
         // On success, remove the document from our local state
-        documents.value = documents.value.filter(d => d.id !== doc.id);
-
-        // Show success message
-        actionMessage.value = 'Document deleted successfully!';
-        setTimeout(() => { actionMessage.value = ''; }, 3000);
+        documents.value = documents.value.filter(d => d.id !== doc.id);        // Show success message making it clear that flashcards are preserved
+        actionMessage.value = 'Document deleted successfully! Any generated flashcards have been preserved and are still available for practice.';
+        setTimeout(() => { actionMessage.value = ''; }, 5000);
     } catch (err) {
         console.error('Error deleting document:', err);
         error.value = err.message || 'Failed to delete document';
