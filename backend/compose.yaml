@@ -1,11 +1,44 @@
 services:
   python-app:
-    env_file:
-      - .env  
     build:
-      context: .
+      context: ../  # Build context is now the root of the project
+      dockerfile: backend/Dockerfile
+      target: python-base # Use the python-base stage for the backend
     container_name: python-app
     restart: unless-stopped
-    init: true
+    env_file:
+      - .env # Path to .env file relative to compose.yaml
+    # No ports exposed directly from python-app, Nginx handles this
+    # The command will be to run gunicorn, for example:
+    command: ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+    working_dir: /app/backend # Set working directory for the backend
+    volumes:
+      # Mount the backend code for development (optional, remove for production image)
+      - ./backend:/app/backend 
+
+  nginx:
+    build:
+      context: ../ # Build context is now the root of the project
+      dockerfile: backend/Dockerfile
+      target: production # Use the production stage for Nginx
+    container_name: nginx-proxy
+    restart: unless-stopped
     ports:
-      - "5000:5000"  # Expose Flask app as per Dockerfile and README
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount SSL certificates from your host to Nginx container
+      - /etc/letsencrypt/live/chamma.sytes.net-0001/fullchain.pem:/etc/ssl/certs/cert.pem:ro
+      - /etc/letsencrypt/live/chamma.sytes.net-0001/privkey.pem:/etc/ssl/private/key.pem:ro
+      # If you want to use the dummy certs from backend/certificates for testing:
+      # - ./backend/certificates/cert.pem:/etc/ssl/certs/cert.pem:ro
+      # - ./backend/certificates/key.pem:/etc/ssl/private/key.pem:ro
+      # Mount Nginx config (optional if already copied in Dockerfile, but good for dev)
+      - ./backend/nginx.conf:/etc/nginx/conf.d/default.conf:ro 
+    depends_on:
+      - python-app
+
+# Optional: Define a network if needed, though default usually works
+# networks:
+#   app-network:
+#     driver: bridge

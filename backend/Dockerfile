@@ -1,45 +1,46 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.13-slim AS base
+# Stage 1: Build the Vue.js frontend
+FROM node:lts-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY package.json yarn.lock ./
+RUN yarn install
+COPY . .
+RUN yarn build
 
-# Set working directory
+# Stage 2: Python backend base
+FROM python:3.13-slim AS python-base
+WORKDIR /app/backend
+
+# Install dependencies
+COPY backend/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend application code
+COPY backend/app.py ./
+COPY backend/functions/ ./functions/
+
+# Stage 3: Nginx
+FROM nginx:stable-alpine AS production
 WORKDIR /app
 
-# Builder stage: install dependencies in a venv
-FROM base AS builder
+# Copy built frontend from frontend-builder stage
+COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
 
-# Copy only requirements.txt first for better cache usage
-COPY --link requirements.txt ./
+# Copy Nginx configuration
+COPY backend/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Create venv and install dependencies using pip cache
-RUN --mount=type=cache,target=/root/.cache/pip \
-    python -m venv .venv && \
-    .venv/bin/pip install --upgrade pip && \
-    .venv/bin/pip install -r requirements.txt
+# Copy SSL certificates (ensure these are correctly mounted in compose.yaml)
+# These paths are placeholders for where compose.yaml will mount them
+COPY backend/certificates/cert.pem /etc/ssl/certs/cert.pem
+COPY backend/certificates/key.pem /etc/ssl/private/key.pem
 
-# Copy application code (excluding files that should not be in the image)
-COPY --link app.py ./
-COPY --link functions/ ./functions/
+# Expose ports (Nginx will listen on 80 and 443)
+EXPOSE 80
+EXPOSE 443
 
-# Final stage: copy venv and app, set up non-root user
-FROM base AS final
+# Nginx will be started by the CMD in compose.yaml or its default behavior
+# The backend will be started by gunicorn in compose.yaml
 
-# Create a non-root user and group
-RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
-
-# Copy venv and app from builder
-COPY --from=builder /app/.venv /app/.venv
-COPY --from=builder /app/app.py ./app.py
-COPY --from=builder /app/functions ./functions
-
-# Set environment so venv is used
-ENV PATH="/app/.venv/bin:$PATH"
-
-# Set permissions for the non-root user
-RUN chown -R appuser:appgroup /app
-
-USER appuser
-
-EXPOSE 5000
-
-CMD ["python", "app.py"]
+# For the backend service in compose.yaml, you'll use python-base
+# and run gunicorn. For the nginx service, you'll use this production stage.
