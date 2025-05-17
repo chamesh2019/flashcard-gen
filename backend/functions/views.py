@@ -17,6 +17,9 @@ from functions.utils import (
     DOCUMENTS_FOLDER,
     DOCUMENT_INDEX_FILE
 )
+from functions.markdown_flashcard_generator import generate_flashcards_from_markdown
+import os
+import traceback
 
 app = Flask(__name__)
 CORS(app) # Enable CORS for all routes
@@ -95,7 +98,6 @@ def api_upload_document():
 @app.route('/api/documents/<string:document_id>/download', methods=['GET'])
 def api_download_document(document_id):
     """API endpoint to download a document by its ID."""
-    from .utils import load_data, DOCUMENT_INDEX_FILE
     
     document_index = load_data(DOCUMENT_INDEX_FILE)
     document = next((doc for doc in document_index if doc['id'] == document_id), None)
@@ -142,9 +144,6 @@ def api_delete_document(document_id):
 @app.route('/api/documents/<string:document_id>/process', methods=['POST'])
 def api_process_document(document_id):
     """API endpoint to process a document and generate flashcards."""
-    from .markdown_flashcard_generator import generate_flashcards_from_markdown
-    import os
-    import traceback
     
     # Get the document details
     document_index = load_data(DOCUMENT_INDEX_FILE)

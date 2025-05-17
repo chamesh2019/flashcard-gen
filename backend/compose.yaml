@@ -1,0 +1,11 @@
+services:
+  python-app:
+    env_file:
+      - .env  
+    build:
+      context: .
+    container_name: python-app
+    restart: unless-stopped
+    init: true
+    ports:
+      - "5000:5000"  # Expose Flask app as per Dockerfile and README

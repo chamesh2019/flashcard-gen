@@ -3,6 +3,7 @@ Flashcard Generator for Markdown Documents using Google's Gemini API
 """
 
 import json
+import os
 from google import genai
 
 def generate_flashcards_from_markdown(file_path):
@@ -20,7 +21,7 @@ def generate_flashcards_from_markdown(file_path):
 
     # Initialize Gemini client - move API key to environment variable in production
     client = genai.Client(
-        api_key="AIzaSyBo0ujw97TVcc46Vyt7FSJ0SWs1xfVk5bM"
+        api_key=os.getenv("GEMINI_API_KEY")
     )
 
     # Use gemini-2.0-flash model

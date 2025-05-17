@@ -46,3 +46,30 @@ for flashcard in flashcards:
 - GET `/api/subjects/<subject_id>/flashcards` - Get flashcards for a subject
 - POST `/api/document` - Upload a markdown document
 - GET `/api/documents/<document_id>/download` - Download a document
+
+## Running with Docker
+
+You can run this project using Docker for a consistent and isolated environment.
+
+- **Python version:** The Docker image uses `python:3.13-slim`.
+- **Ports:** The backend service is exposed on port **5000**.
+- **Environment variables:** No required environment variables are set by default. If you need to use a `.env` file, uncomment the `env_file` line in the `docker-compose.yml`.
+
+### Build and Run
+
+1. Build and start the service using Docker Compose:
+   ```
+   docker compose up --build
+   ```
+   This will build the image and start the backend at [http://localhost:5000](http://localhost:5000).
+
+2. To stop the service:
+   ```
+   docker compose down
+   ```
+
+- No additional configuration or external services are required.
+- All dependencies are installed inside a Python virtual environment within the container.
+- The application runs as a non-root user for improved security.
+
+If you need to customize environment variables, create a `.env` file in the project root and uncomment the `env_file` line in the `docker-compose.yml`.
