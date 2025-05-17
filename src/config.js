@@ -1,6 +1,6 @@
 const config = {
   // API endpoint base URL
-  apiBaseUrl: "http://localhost:5000",
+  apiBaseUrl: "https://csmanager2020.pythonanywhere.com",
 };
 
 // check if there is BASE_URL in the environment
