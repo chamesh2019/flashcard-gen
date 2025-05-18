@@ -268,8 +268,15 @@ onMounted(() => {
     padding: 1rem;
     margin-bottom: 1rem;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    /* Stack content and button on small screens */
+    gap: 0.75rem;
+    /* Add gap between content and button */
+}
+
+.flashcard-content {
+    flex-grow: 1;
+    /* Allow content to take available space */
 }
 
 .flashcard-content p {
@@ -298,5 +305,60 @@ onMounted(() => {
 .btn-sm {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (min-width: 600px) {
+
+    /* Apply row layout for larger screens */
+    .flashcard-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .flashcard-content {
+        margin-bottom: 0;
+        /* Remove bottom margin when in row layout */
+    }
+
+    .flashcard-item .btn-primary {
+        flex-shrink: 0;
+        /* Prevent button from shrinking */
+        margin-left: 1rem;
+        /* Add some space between content and button */
+    }
+}
+
+@media (max-width: 768px) {
+    .ignored-flashcards-page {
+        padding: 1rem;
+    }
+
+    .content-wrapper {
+        padding: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    .ignored-flashcards-list h2 {
+        font-size: 1.3rem;
+    }
+
+    .form-select {
+        padding: 0.6rem;
+        font-size: 0.95rem;
+    }
+
+    .flashcard-item .btn-primary {
+        width: 100%;
+        /* Make button full width on small screens */
+        margin-left: 0;
+        /* Reset margin for stacked layout */
+        margin-top: 0.5rem;
+        /* Add some space above button when stacked */
+    }
 }
 </style>
