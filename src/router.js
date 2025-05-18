@@ -5,6 +5,7 @@ import UploadDocument from "./pages/UploadDocument.vue";
 import FlashcardPractice from "./pages/FlashcardPractice.vue";
 import DocumentInfo from "./pages/DocumentInfo.vue";
 import DocumentSelection from "./pages/DocumentSelection.vue";
+import IgnoredFlashcards from "./pages/IgnoredFlashcards.vue";
 
 const routes = [
   {
@@ -38,6 +39,11 @@ const routes = [
     name: "FlashcardPractice",
     component: FlashcardPractice,
     props: true, // Pass route params as props to the component
+  },
+  {
+    path: "/ignored-flashcards",
+    name: "IgnoredFlashcards",
+    component: IgnoredFlashcards,
   },
 ];
 

@@ -2,11 +2,13 @@
 import SubjectCard from '../components/SubjectCard.vue';
 import { ref, onMounted } from 'vue';
 import config from '../config';
+import { useRoute } from 'vue-router';
 
 const apiBaseUrl = config.apiBaseUrl;
 const subjectsWithFlashcards = ref([]);
 const isLoading = ref(true);
 const errorMessage = ref('');
+const route = useRoute();
 
 const fetchSubjectsSummary = async () => {
   isLoading.value = true;
@@ -62,7 +64,7 @@ onMounted(() => {
         <div class="empty-icon">📚</div>
         <h3>No Subjects Found</h3>
         <p>You don't have any subjects yet. Create your first subject to get started!</p>
-        <router-link to="/add-subject" class="btn btn-primary">
+        <router-link :to="{ path: '/add-subject', query: route.query }" class="btn btn-primary">
           <span class="icon">✚</span> Add New Subject
         </router-link>
       </div>

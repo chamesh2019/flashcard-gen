@@ -17,11 +17,11 @@
 
         <div v-else-if="errorMessage" class="message-box error-message">
             <p>{{ errorMessage }}</p>
-            <router-link to="/" class="btn btn-primary">Back to Home</router-link>
+            <router-link :to="{ path: '/', query: route.query }" class="btn btn-primary">Back to Home</router-link>
         </div>
         <div v-else-if="!currentFlashcard && !isPracticeFinished" class="message-box warning-message">
             <p>No flashcards found for {{ subjectName }}{{ documentName ? ` - ${documentName}` : '' }}.</p>
-            <router-link to="/" class="btn btn-primary">Back to Home</router-link>
+            <router-link :to="{ path: '/', query: route.query }" class="btn btn-primary">Back to Home</router-link>
         </div>
 
         <div v-if="currentFlashcard && !isPracticeFinished" class="flashcard-container card">
@@ -98,7 +98,9 @@
                 <button @click="restartPractice" class="primary-action-btn">
                     Practice Again
                 </button>
-                <router-link :to="documentId ? `/subjects/${subjectId}/documents` : '/'" class="secondary-action-btn">
+                <router-link
+                    :to="documentId ? { path: `/subjects/${subjectId}/documents`, query: route.query } : { path: '/', query: route.query }"
+                    class="secondary-action-btn">
                     {{ documentId ? 'Back to Documents' : 'Back to Home' }}
                 </router-link>
             </div>
@@ -167,9 +169,7 @@ const loadIgnoredFlashcards = () => {
     if (!subjectId.value) return;
 
     // Use document-specific key if we have a documentId
-    const storageKey = documentId.value
-        ? `ignoredFlashcards_${subjectId.value}_doc_${documentId.value}`
-        : `ignoredFlashcards_${subjectId.value}`;
+    const storageKey = `ignoredFlashcards_${subjectId.value}`;
 
     const storedIgnored = localStorage.getItem(storageKey);
     if (storedIgnored) {
@@ -183,9 +183,7 @@ const saveIgnoredFlashcards = () => {
     if (!subjectId.value) return;
 
     // Use document-specific key if we have a documentId
-    const storageKey = documentId.value
-        ? `ignoredFlashcards_${subjectId.value}_doc_${documentId.value}`
-        : `ignoredFlashcards_${subjectId.value}`;
+    const storageKey = `ignoredFlashcards_${subjectId.value}`;
 
     localStorage.setItem(storageKey, JSON.stringify(Array.from(ignoredFlashcardIds.value)));
 };
@@ -251,13 +249,11 @@ const fetchFlashcards = async () => {
     errorMessage.value = '';
     isPracticeFinished.value = false; // Reset practice finished state
 
-    // Ensure ignored list is loaded for the current subject *before* fetching
-    // This is typically handled by onMounted or subjectId watcher calling loadIgnoredFlashcards
-
     try {
         await fetchSubjectDetails(); // Get subject name
 
-        let allFlashcards = []; if (documentId.value) {
+        let allFlashcards = [];
+        if (documentId.value) {
             await fetchDocumentDetails(); // Get document name if we have a document ID
 
             // Fetch document-specific flashcards
@@ -266,14 +262,10 @@ const fetchFlashcards = async () => {
                 throw new Error(`Failed to fetch flashcards: ${response.statusText} (${response.status})`);
             }
             allFlashcards = await response.json();
-        } else {
-            // Fetch all subject flashcards (legacy behavior)
-            const response = await fetch(`${apiBaseUrl}/api/subjects/${subjectId.value}/flashcards`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch flashcards: ${response.statusText} (${response.status})`);
-            }
-            allFlashcards = await response.json();
         }
+        // Removed the 'else' block that previously fetched all subject flashcards (legacy behavior)
+        // Now, if documentId.value is null, allFlashcards will remain [],
+        // and the UI will show "No flashcards found".
 
         // Filter out ignored flashcards
         flashcards.value = allFlashcards.filter(fc => !ignoredFlashcardIds.value.has(fc.id));

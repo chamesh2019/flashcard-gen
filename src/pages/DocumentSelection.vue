@@ -19,7 +19,6 @@
 
         <div v-else-if="documents.length === 0" class="message-box warning-message">
             <p>No documents found for this subject.</p>
-            <router-link :to="{ name: 'UploadDocument' }" class="btn btn-primary">Upload a Document</router-link>
             <router-link to="/" class="btn btn-secondary">Back to Home</router-link>
         </div>
 
@@ -29,7 +28,6 @@
                     <h3 class="document-title">{{ document.original_filename }}</h3>
                     <p class="document-date">Uploaded: {{ formatDate(document.uploaded_at) }}</p>
                     <div class="document-status" :class="document.processed ? 'processed' : 'not-processed'">
-                        <span class="status-indicator"></span>
                         {{ document.processed ? 'Processed' : 'Not Processed' }}
                     </div>
                 </div>
@@ -111,7 +109,8 @@ const startPractice = (document) => {
         params: {
             subjectId: subjectId.value,
             documentId: document.id
-        }
+        },
+        query: { ...route.query }
     });
 };
 

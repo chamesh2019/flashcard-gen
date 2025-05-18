@@ -131,7 +131,7 @@ def api_get_flashcards(subject_id):
 @app.route('/api/documents', methods=['GET'])
 def api_get_documents():
     """API endpoint to get all documents."""
-    return jsonify(get_all_documents())
+    return jsonify([doc for doc in get_all_documents() if not doc.get('deleted', False)])
 
 @app.route('/api/documents/<string:document_id>', methods=['DELETE'])
 def api_delete_document(document_id):

@@ -24,7 +24,7 @@ const router = useRouter();
 
 const navigateToPractice = () => {
   if (props.id) {
-    router.push(`/subjects/${props.id}/documents`);
+    router.push({ path: `/subjects/${props.id}/documents`, query: { ...router.currentRoute.value.query } });
   }
 };
 </script>
