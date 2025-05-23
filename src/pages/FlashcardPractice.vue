@@ -270,6 +270,16 @@ const fetchFlashcards = async () => {
         // Filter out ignored flashcards
         flashcards.value = allFlashcards.filter(fc => !ignoredFlashcardIds.value.has(fc.id));
 
+        // Check if shuffle is enabled
+        const isShuffleEnabled = localStorage.getItem('flashcards_shuffle_enabled') === 'true';
+        if (isShuffleEnabled && flashcards.value.length > 0) {
+            // Shuffle the flashcards array
+            for (let i = flashcards.value.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards.value[i], flashcards.value[j]] = [flashcards.value[j], flashcards.value[i]];
+            }
+        }
+
         currentIndex.value = 0;
         showAnswer.value = false;
         if (flashcards.value.length === 0) {

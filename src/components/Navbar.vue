@@ -29,22 +29,44 @@
         <router-link :to="{ path: '/ignored-flashcards', query: route.query }" class="navbar-item"
           @click="isMobileMenuOpen = false">Ignored
           Flashcards</router-link>
+        <div class="shuffle-toggle navbar-item">
+          <label class="toggle-label">
+            <span>Shuffle</span>
+            <div class="toggle-switch" :class="{ 'active': isShuffleEnabled }" @click="toggleShuffle">
+              <div class="toggle-slider"></div>
+            </div>
+          </label>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const isAdmin = computed(() => route.query.admin !== undefined);
 const isMobileMenuOpen = ref(false);
+const isShuffleEnabled = ref(false);
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
 };
+
+const toggleShuffle = () => {
+  isShuffleEnabled.value = !isShuffleEnabled.value;
+  localStorage.setItem('flashcards_shuffle_enabled', isShuffleEnabled.value ? 'true' : 'false');
+};
+
+onMounted(() => {
+  // Load shuffle state from localStorage
+  const savedShuffleState = localStorage.getItem('flashcards_shuffle_enabled');
+  if (savedShuffleState !== null) {
+    isShuffleEnabled.value = savedShuffleState === 'true';
+  }
+});
 </script>
 
 <style scoped>
@@ -107,6 +129,46 @@ const toggleMobileMenu = () => {
 .navbar-menu .navbar-item.router-link-active {
   background-color: rgba(59, 130, 246, 0.1);
   color: var(--primary-color);
+}
+
+.shuffle-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+.toggle-switch.active {
+  background-color: var(--primary-color);
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(20px);
 }
 
 .navbar-toggle {
@@ -184,6 +246,10 @@ const toggleMobileMenu = () => {
 
   .navbar-menu .navbar-item:last-child {
     border-bottom: none;
+  }
+
+  .shuffle-toggle {
+    justify-content: space-between;
   }
 
   .navbar-menu .navbar-item .icon {
