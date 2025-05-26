@@ -1,6 +1,6 @@
 const config = {
   // API endpoint base URL
-  apiBaseUrl: "https://csmanager2020.pythonanywhere.com",
+  apiBaseUrl: "https://chamma.sytes.net",
 };
 
 // check if there is BASE_URL in the environment
