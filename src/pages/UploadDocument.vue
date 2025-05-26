@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="page-header">
-      <h1 class="page-title">Upload Document</h1>
-      <p class="page-description">Upload a Markdown document to generate flashcards</p>
+      <h1 class="page-title">Upload Documents</h1>
+      <p class="page-description">Upload Markdown documents to generate flashcards</p>
     </div>
 
     <div class="card form-container">
@@ -19,25 +19,27 @@
       </div>
       <form v-else @submit.prevent="handleSubmit" class="upload-form">
         <div class="form-group">
-          <label for="document" class="form-label">Upload Markdown Document:</label>
+          <label for="document" class="form-label">Upload Markdown Documents:</label>
           <div class="file-upload-container">
             <input type="file" id="document" class="file-input" @change="handleFileUpload" accept=".md,.markdown"
-              :disabled="uploading" />
+              :disabled="uploading" multiple />
             <label for="document" class="file-upload-label">
               <span class="file-upload-icon">📄</span>
-              <span class="file-upload-text">{{ selectedFile ? selectedFile.name : 'Choose a file...' }}</span>
+              <span class="file-upload-text">{{ selectedFiles.length ? `${selectedFiles.length} file(s) selected` : 'Choose files...' }}</span>
               <span class="file-upload-button">Browse</span>
             </label>
           </div>
-          <div v-if="selectedFile" class="selected-file">
-            <div class="file-info">
-              <span class="file-icon">📄</span>
-              <span class="file-details">
-                <span class="file-name">{{ selectedFile.name }}</span>
-                <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
-              </span>
+          <div v-if="selectedFiles.length > 0" class="selected-files">
+            <div v-for="(file, index) in selectedFiles" :key="index" class="selected-file">
+              <div class="file-info">
+                <span class="file-icon">📄</span>
+                <span class="file-details">
+                  <span class="file-name">{{ file.name }}</span>
+                  <span class="file-size">{{ formatFileSize(file.size) }}</span>
+                </span>
+              </div>
+              <button type="button" class="file-remove-btn" @click="removeFile(index)">✕</button>
             </div>
-            <button type="button" class="file-remove-btn" @click="clearFile">✕</button>
           </div>
         </div>
 
@@ -55,10 +57,17 @@
         </div>
 
         <button type="submit" class="btn btn-primary submit-button"
-          :disabled="uploading || !selectedFile || !selectedSubjectId || subjects.length === 0">
+          :disabled="uploading || selectedFiles.length === 0 || !selectedSubjectId || subjects.length === 0">
           <span class="icon">{{ uploading ? '⏳' : '📤' }}</span>
-          {{ uploading ? 'Uploading...' : 'Upload Document' }}
+          {{ uploading ? 'Uploading...' : 'Upload Documents' }}
         </button>
+
+        <div v-if="uploadProgress.total > 0" class="upload-progress">
+          <p>Uploading {{ uploadProgress.current }} of {{ uploadProgress.total }} files</p>
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: `${uploadProgress.percentage}%` }"></div>
+          </div>
+        </div>
 
         <div v-if="uploadSuccess" class="message-box success-message">
           <p>{{ uploadSuccess }}</p>
@@ -73,11 +82,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import config from '../config';
 
 const apiBaseUrl = config.apiBaseUrl;
-const selectedFile = ref(null);
+const selectedFiles = ref([]);
 const selectedSubjectId = ref('');
 const subjects = ref([]);
 const isLoading = ref(true);
@@ -85,16 +94,28 @@ const error = ref('');
 const uploading = ref(false);
 const uploadSuccess = ref('');
 const uploadError = ref('');
+const uploadProgress = reactive({
+  total: 0,
+  current: 0,
+  percentage: 0
+});
 
 const handleFileUpload = (event) => {
-  selectedFile.value = event.target.files[0];
+  selectedFiles.value = Array.from(event.target.files);
   // Clear previous messages when a new file is selected
   uploadSuccess.value = '';
   uploadError.value = '';
 };
 
-const clearFile = () => {
-  selectedFile.value = null;
+const removeFile = (index) => {
+  selectedFiles.value.splice(index, 1);
+  // Reset messages when a file is removed
+  uploadSuccess.value = '';
+  uploadError.value = '';
+};
+
+const clearFiles = () => {
+  selectedFiles.value = [];
   // Reset the input element
   const fileInput = document.getElementById('document');
   if (fileInput) fileInput.value = '';
@@ -109,13 +130,22 @@ const formatFileSize = (bytes) => {
 };
 
 const fetchSubjects = async () => {
+  console.log('Fetching subjects...');
   isLoading.value = true;
-  error.value = ''; try {
+  error.value = '';
+  
+  try {
+    console.log('API URL:', `${apiBaseUrl}/api/subjects`);
     const response = await fetch(`${apiBaseUrl}/api/subjects`);
+    console.log('Response status:', response.status);
+    
     if (!response.ok) {
       throw new Error(`Failed to fetch subjects: ${response.statusText}`);
     }
-    subjects.value = await response.json();
+    
+    const data = await response.json();
+    console.log('Subjects data:', data);
+    subjects.value = data;
   } catch (err) {
     console.error('Error fetching subjects:', err);
     error.value = err.message || 'Failed to load subjects. Please try again.';
@@ -125,8 +155,8 @@ const fetchSubjects = async () => {
 };
 
 const handleSubmit = async () => {
-  if (!selectedFile.value) {
-    uploadError.value = 'Please select a file to upload.';
+  if (selectedFiles.value.length === 0) {
+    uploadError.value = 'Please select at least one file to upload.';
     return;
   }
 
@@ -138,37 +168,74 @@ const handleSubmit = async () => {
   uploading.value = true;
   uploadSuccess.value = '';
   uploadError.value = '';
+  
+  // Set up upload progress tracking
+  uploadProgress.total = selectedFiles.value.length;
+  uploadProgress.current = 0;
+  uploadProgress.percentage = 0;
+  
+  const successfulUploads = [];
+  const failedUploads = [];
 
-  const formData = new FormData();
-  formData.append('file', selectedFile.value);
-  formData.append('subject_id', selectedSubjectId.value);
-  try {
-    const response = await fetch(`${apiBaseUrl}/api/document`, {
-      method: 'POST',
-      body: formData,
-      // Don't set Content-Type header for FormData
-    });
+  // Upload files one by one
+  for (let i = 0; i < selectedFiles.value.length; i++) {
+    const file = selectedFiles.value[i];
+    uploadProgress.current = i + 1;
+    uploadProgress.percentage = Math.round((uploadProgress.current / uploadProgress.total) * 100);
 
-    const result = await response.json();
+    const formData = new FormData();
+    formData.append('file', file); // Use 'file' as the key instead of 'files'
+    formData.append('subject_id', selectedSubjectId.value);
+    
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/document`, {
+        method: 'POST',
+        body: formData,
+        // Don't set Content-Type header for FormData
+      });
 
-    if (!response.ok) {
-      throw new Error(result.error || 'Upload failed');
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Upload failed');
+      }
+
+      // Track successful upload
+      successfulUploads.push(file.name);
+    } catch (err) {
+      console.error(`Error uploading ${file.name}:`, err);
+      failedUploads.push({ name: file.name, error: err.message });
     }
-
-    // Upload successful
-    uploadSuccess.value = `File "${selectedFile.value.name}" uploaded successfully!`;
-
-    // Reset form
-    selectedFile.value = null;
-    selectedSubjectId.value = '';
-    document.getElementById('document').value = '';
-  } catch (err) {
-    console.error('Upload error:', err);
-    uploadError.value = err.message || 'An error occurred during upload. Please try again.';
-  } finally {
-    uploading.value = false;
   }
-};
+
+  // Update UI based on results
+  if (successfulUploads.length > 0) {
+    if (failedUploads.length > 0) {
+      // Some succeeded, some failed
+      uploadSuccess.value = `Successfully uploaded ${successfulUploads.length} of ${selectedFiles.value.length} files.`;
+      uploadError.value = `Failed to upload: ${failedUploads.map(f => f.name).join(', ')}`;
+    } else {
+      // All succeeded
+      uploadSuccess.value = `All ${successfulUploads.length} files uploaded successfully!`;
+      
+      // Reset form
+      clearFiles();
+      selectedSubjectId.value = '';
+      document.getElementById('document').value = '';
+    }
+  } else if (failedUploads.length > 0) {
+    // All failed
+    uploadError.value = `Failed to upload any files. Please try again.`;
+  }
+  
+  // Reset upload progress
+  setTimeout(() => {
+    uploadProgress.total = 0;
+    uploadProgress.current = 0;
+    uploadProgress.percentage = 0;
+  }, 3000);
+    uploading.value = false;
+}
 
 onMounted(() => {
   fetchSubjects();
@@ -190,6 +257,80 @@ onMounted(() => {
 
 .form-group {
   margin-bottom: 0.5rem;
+}
+
+.selected-files {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.selected-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: var(--background-color-light);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  font-weight: 500;
+}
+
+.file-size {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+.file-remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--danger-color);
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.file-remove-btn:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.upload-progress {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 0.75rem;
+  background-color: var(--background-color-light);
+  border-radius: 0.375rem;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  transition: width 0.2s ease-in-out;
 }
 
 .loading-indicator {
@@ -279,6 +420,13 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+.selected-files {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
 .selected-file {
   display: flex;
   align-items: center;
@@ -286,7 +434,6 @@ onMounted(() => {
   background-color: rgba(59, 130, 246, 0.05);
   padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
-  margin-top: 0.5rem;
   border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
