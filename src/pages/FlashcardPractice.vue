@@ -29,7 +29,7 @@
             <div class="progress-container">
                 <div class="progress-bar" :style="{ width: `${(currentIndex + 1) / flashcards.length * 100}%` }"></div>
             </div>
-            <div class="flashcard" :class="{ 'flipped': showAnswer }" @click="!showAnswer && revealAnswer()">
+            <div class="flashcard" :class="{ 'flipped': showAnswer }" @click="revealAnswer()">
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
                         <div class="card-content">
@@ -294,7 +294,7 @@ const fetchFlashcards = async () => {
 };
 
 const revealAnswer = () => {
-    showAnswer.value = true;
+    showAnswer.value = !showAnswer.value;
 };
 
 const rateFlashcard = (rating) => {
