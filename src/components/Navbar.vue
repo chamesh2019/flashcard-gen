@@ -47,7 +47,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const isAdmin = computed(() => route.query.admin !== undefined);
+const isAdmin = computed(() => route.query.user !== "chamma2020");
 const isMobileMenuOpen = ref(false);
 const isShuffleEnabled = ref(false);
 
