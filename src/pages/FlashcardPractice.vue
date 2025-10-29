@@ -33,14 +33,14 @@
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
                         <div class="card-content">
-                            <p>{{ currentFlashcard.question }}</p>
+                            <MarkdownContent :content="currentFlashcard.question" />
                             <div v-if="!showAnswer" class="tap-hint">Tap to reveal answer</div>
                         </div>
                     </div>
                     <div class="flashcard-back">
                         <div class="card-content">
                             <div class="answer-label">ANSWER</div>
-                            <p>{{ currentFlashcard.answer }}</p>
+                            <MarkdownContent :content="currentFlashcard.answer" />
                         </div>
                     </div>
                 </div>
@@ -112,6 +112,7 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import config from '../config';
+import MarkdownContent from '../components/MarkdownContent.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -496,6 +497,14 @@ watch(
     /* Add scroll for very long content */
 }
 
+.flashcard-front .card-content,
+.flashcard-back .card-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 .card-content {
     width: 100%;
     height: 100%;
@@ -520,6 +529,19 @@ watch(
     line-height: 1.5;
     max-width: 90%;
     font-weight: 500;
+}
+
+/* Markdown content styling within flashcards */
+.card-content :deep(.markdown-content) {
+    font-size: 1.75rem;
+    font-weight: 500;
+    max-width: 90%;
+}
+
+.card-content :deep(.markdown-content p) {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin: 0;
 }
 
 .tap-hint {

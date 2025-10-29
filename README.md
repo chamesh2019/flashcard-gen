@@ -12,6 +12,11 @@ This project is a web application for creating, managing, and studying with digi
 - Add cards with front and back content
 - Study mode with card flipping
 - Track learning progress
+- **Markdown support for questions and answers** - Format your flashcard content with markdown syntax including:
+  - Headers, bold, italic, and lists
+  - Code blocks and inline code
+  - Tables, blockquotes, and links
+  - Images and horizontal rules
 
 ## Getting Started
 
