@@ -17,15 +17,6 @@
       <div class="navbar-menu" :class="{ 'is-active': isMobileMenuOpen }">
         <router-link :to="{ path: '/', query: route.query }" class="navbar-item"
           @click="isMobileMenuOpen = false">Home</router-link>
-        <router-link v-if="isAdmin" :to="{ path: '/add-subject', query: route.query }" class="navbar-item"
-          @click="isMobileMenuOpen = false">Add
-          Subject</router-link>
-        <router-link v-if="isAdmin" :to="{ path: '/upload-document', query: route.query }" class="navbar-item"
-          @click="isMobileMenuOpen = false">Upload
-          Document</router-link>
-        <router-link v-if="isAdmin" :to="{ path: '/document-info', query: route.query }" class="navbar-item"
-          @click="isMobileMenuOpen = false">Document
-          Info</router-link>
         <router-link :to="{ path: '/ignored-flashcards', query: route.query }" class="navbar-item"
           @click="isMobileMenuOpen = false">Ignored
           Flashcards</router-link>
