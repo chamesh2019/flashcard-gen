@@ -872,6 +872,14 @@ watch(
         /* Allow text to use more width */
     }
 
+    .card-content :deep(.markdown-content) {
+        font-size: 1.2rem;
+    }
+
+    .card-content :deep(.markdown-content p) {
+        font-size: 1.2rem;
+    }
+
     .flashcard-front .card-content p,
     .flashcard-back .card-content p {
         max-height: 180px;
